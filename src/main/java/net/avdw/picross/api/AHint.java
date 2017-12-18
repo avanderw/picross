@@ -5,19 +5,17 @@
  */
 package net.avdw.picross.api;
 
-import java.util.List;
-
+import java.awt.Color;
 
 /**
  *
- * @author van der Westhuizen
+ * @author CP318674
  */
-public interface ALevel {
+public interface AHint {
 
-    List<List<AHint>> colHints();
+    Integer count();
 
-    ACell[][] grid();
+    Color color();
 
-    List<List<AHint>> rowHints();
-
+    Boolean unbroken();
 }

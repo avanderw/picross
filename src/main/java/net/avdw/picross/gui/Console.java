@@ -5,8 +5,12 @@
  */
 package net.avdw.picross.gui;
 
+import java.awt.Color;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import net.avdw.picross.api.ACell;
+import net.avdw.picross.level.Hint;
 
 /**
  *
@@ -27,11 +31,18 @@ public class Console {
 
     private void render() {
         StringBuilder builder = new StringBuilder();
-        for (List<ACell> row : gui.core.level.data().grid()) {
-            for (ACell cell : row) {
-                builder.append(cell);
+        builder.append(String.format("%20s", ""));
+        gui.core.level.data().colHints().forEach((col)-> {
+            builder.append(String.format("%20s", col));
+        });
+        builder.append("\n");
+
+        for (int y = 0; y < gui.core.level.data().grid().length; y++) {
+            builder.append(String.format("%20s",gui.core.level.data().rowHints().get(y)));
+            for (int x = 0; x < gui.core.level.data().grid()[y].length; x++) {
+                builder.append(String.format("%20s",gui.core.level.data().grid()[y][x]));
             }
-            builder.append(Character.LINE_SEPARATOR);
+            builder.append("\n");
         }
 
         System.out.println(builder.toString());

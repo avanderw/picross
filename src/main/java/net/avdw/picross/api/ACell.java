@@ -5,10 +5,14 @@
  */
 package net.avdw.picross.api;
 
+import java.awt.Color;
+
 /**
  *
  * @author van der Westhuizen
  */
 public interface ACell {
+
+    public Color color();
 
 }

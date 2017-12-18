@@ -8,7 +8,7 @@ package net.avdw.picross.core;
 import java.util.ArrayList;
 import java.util.List;
 import net.avdw.picross.api.ACell;
-import net.avdw.picross.core.level.Level;
+import net.avdw.picross.level.Level;
 
 /**
  *
