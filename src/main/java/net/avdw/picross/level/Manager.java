@@ -20,7 +20,7 @@ public class Manager {
 
     Manager() {
         loader = new Loader();
-        level = loader.load(Paths.get("./src/main/resources/icon_share.png"));
+        level = loader.load(Paths.get("./src/main/resources/Sprite-0002.png"));
     }
 
     Level.Data level() {
