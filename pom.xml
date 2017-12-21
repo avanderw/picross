@@ -46,6 +46,17 @@
                         <directory>${project.basedir}/src/main/resources</directory>
                         <targetPath>${project.build.directory}/${project.build.finalName}</targetPath>
                     </resource>
+                    <resource>
+                        <directory>${project.basedir}/submodule/phaser-ce/src</directory>
+                        <targetPath>${project.basedir}/src/main/webapp/js/debug/phaser-ce</targetPath>
+                    </resource>
+                    <resource>
+                        <directory>${project.basedir}/submodule/object-hash/dist</directory>
+                        <targetPath>${project.basedir}/src/main/webapp/js/lib</targetPath>
+                        <includes>
+                            <include>object_hash.js</include>
+                        </includes>
+                    </resource>
                 </resources>
                 <plugins>
                     <plugin>
