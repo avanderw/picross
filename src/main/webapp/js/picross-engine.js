@@ -19,8 +19,6 @@ Picross.Engine.prototype = {
                     broken: false
                 };
             }
-//            console.log(key, map[key].last, x, x - map[key].last);
-//            console.log(!map[key].broken, x - map[key].last > 1);
 
             map[key].count++;
             if (!map[key].broken) {
@@ -28,7 +26,7 @@ Picross.Engine.prototype = {
             }
             map[key].last = x;
         }
-        console.log(map);
+        return map;
     },
     colHint: function (idx, input) {
         for (let y = 0; y < this.matrix.length; y++) {
