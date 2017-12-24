@@ -1,8 +1,9 @@
 /* global Picross, objectHash */
 Picross = function () {};
 
-Picross.Engine = function (matrix) {
+Picross.Engine = function (matrix, colors) {
     this.matrix = matrix;
+    this.colors = colors;
 };
 
 Picross.Engine.prototype = {
@@ -15,6 +16,7 @@ Picross.Engine.prototype = {
                 map[key] = {
                     color: this.matrix[idx][x],
                     count: 0,
+                    idx: this.colors.indexOf(key),
                     last: x,
                     broken: false
                 };
@@ -29,8 +31,25 @@ Picross.Engine.prototype = {
         return map;
     },
     colHint: function (idx, input) {
+        let map = {};
         for (let y = 0; y < this.matrix.length; y++) {
-            this.matrix[y][idx];
+            let key = objectHash.MD5(this.matrix[y][idx]);
+            if (!(key in map)) {
+                map[key] = {
+                    color: this.matrix[y][idx],
+                    count: 0,
+                    idx: this.colors.indexOf(key),
+                    last: y,
+                    broken: false
+                };
+            }
+
+            map[key].count++;
+            if (!map[key].broken) {
+                map[key].broken = y - map[key].last > 1;
+            }
+            map[key].last = y;
         }
+        return map;
     }
 };

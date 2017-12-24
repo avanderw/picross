@@ -1,2 +1,4 @@
 /target/
 /src/main/webapp/js/debug/phaser-ce/
+.idea
+*.iml
