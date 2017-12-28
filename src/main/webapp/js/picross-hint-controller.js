@@ -13,8 +13,8 @@ Picross.HintController.prototype = {
         cols: []
     },
     view: {
-        row:{},
-        col:{}
+        row: {},
+        col: {}
     },
     createModel: function (bmpData) {
         for (let y = 0; y < bmpData.height; y++) {
@@ -53,14 +53,14 @@ Picross.HintController.prototype = {
         });
         return map;
     },
-    createView:function() {
+    createView: function () {
         this.view.row = this.createHintView(this.model.rows, false);
         this.view.col = this.createHintView(this.model.cols, true);
     },
     createHintView: function (hints, isVertical) {
         var groups = game.add.group();
         var ref = this;
-        
+
         hints.forEach(function (hint, idx) {
             let hintGroup = game.add.group();
             Object.keys(hint).forEach(function (key) {
@@ -86,13 +86,48 @@ Picross.HintController.prototype = {
 
             if (isVertical) {
                 hintGroup.x = Picross.Constants.cell.align * idx;
+                let bg = game.make.bitmapData(Picross.Constants.cell.size, Picross.Constants.cell.size);
+                bg.fill(255, 0, 0, 1);
+                let sprite = game.add.sprite(0, -Picross.Constants.cell.align, bg);
+                sprite.alpha = 0;
+                hintGroup.add(sprite);
             } else {
                 hintGroup.y = Picross.Constants.cell.align * idx;
+                let bg = game.make.bitmapData(Picross.Constants.cell.size, Picross.Constants.cell.size);
+                bg.fill(255, 0, 0, 1);
+                let sprite = game.add.sprite(Picross.Constants.cell.align * Object.keys(ref.colorController.model).length, 0, bg);
+                sprite.alpha = 0;
+                hintGroup.add(sprite);
             }
             groups.add(hintGroup);
-
         });
         return groups;
+    },
+    updateView: function (bmpData, input, col, row) {
+        let correctKey = objectHash.MD5(bmpData.getPixelRGB(col, row));
+        let inputKey = objectHash.MD5(input[row][col]);
+
+        let ref = this;
+        let rowError = !Object.keys(this.model.rows[row]).includes(inputKey);
+        let colError = !Object.keys(this.model.cols[col]).includes(inputKey);
+
+        Object.keys(this.model.rows[row]).forEach(function (key) {
+            let hint = ref.model.rows[row][key];
+            if (!rowError) {
+                let count = 0;
+                for (let x = 0; x < bmpData.width; x++) {
+                    if (input[row][x] !== undefined && objectHash.MD5(input[row][x]) === key) {
+                        count++;
+                    }
+                }
+
+                rowError = (hint.count < count);
+            }
+        });
+
+        ref.view.row.getAt(row).getAt(ref.view.row.getAt(row).length - 1).alpha = (rowError) ? 1 : 0;
+        ref.view.col.getAt(col).getAt(ref.view.col.getAt(col).length - 1).alpha = (colError) ? 1 : 0;
+
     }
 };
 

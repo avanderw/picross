@@ -20,52 +20,24 @@ function create() {
     game.load.start();
 }
 
-let levelPng;
-let colorController;
-let hintController;
+let levelBmpData;
 function start() {
-    levelPng = game.make.bitmapData(width, height);
-    levelPng.copy('test');
-    levelPng.update();
+    levelBmpData = game.make.bitmapData(width, height);
+    levelBmpData.copy('test');
+    levelBmpData.update();
 
-    colorController = new Picross.ColorController(levelPng, Picross.Constants.cell.size);
-    hintController = new Picross.HintController(levelPng, colorController);
+    let colorController = new Picross.ColorController(levelBmpData, Picross.Constants.cell.size);
+    let hintController = new Picross.HintController(levelBmpData, colorController);
+    let boardController = new Picross.BoardController(levelBmpData, colorController, hintController);
 
-    let pngData = createMatrix(levelPng.height, levelPng.width);
-    let inputData = createMatrix(levelPng.height, levelPng.width);
-    let colorMap = {};
-    let picGroup = game.add.group();
-    for (let y = 0; y < levelPng.height; y++) {
-        for (let x = 0; x < levelPng.width; x++) {
-            let bg = game.make.bitmapData(Picross.Constants.cell.size, Picross.Constants.cell.size);
-            let color = levelPng.getPixelRGB(x, y);
-            let key = objectHash.MD5(color);
-            bg.fill(color.r, color.g, color.b, color.a);
-            let sprite = game.add.sprite(0, 0, bg);
-            sprite.inputEnabled = true;
-            sprite.cellY = y;
-            sprite.cellX = x;
-            sprite.events.onInputDown.add(function () {
-                sprite.alpha = 1;
-                sprite.loadTexture(colorController.selected.texture);
-                inputData[y][x] = colorController.selected.color;
-            }, this);
-            sprite.alpha = 0;
-            picGroup.add(sprite);
-            colorMap[key] = {color: color, texture: bg};
-            pngData[y][x] = color;
-        }
-    }
-    picGroup.align(width, height, Picross.Constants.cell.align, Picross.Constants.cell.align);
+    boardController.view.align(width, height, Picross.Constants.cell.align, Picross.Constants.cell.align);
 
-    hintController.view.row.alignTo(picGroup.getBounds(game.stage), Phaser.RIGHT_TOP);
-    hintController.view.row.x += Picross.Constants.text.shift;
+    hintController.view.row.alignTo(boardController.view.getBounds(game.stage), Phaser.RIGHT_TOP);
 
-    hintController.view.col.alignTo(picGroup.getBounds(game.stage), Phaser.TOP_LEFT);
-    hintController.view.col.x += Picross.Constants.text.shift;
+    hintController.view.col.alignTo(boardController.view.getBounds(game.stage), Phaser.TOP_LEFT);
 
     let picrossGroup = game.add.group();
-    picrossGroup.add(picGroup);
+    picrossGroup.add(boardController.view);
     picrossGroup.add(hintController.view.row);
     picrossGroup.add(hintController.view.col);
     picrossGroup.x -= picrossGroup.getBounds(game.stage).x;
