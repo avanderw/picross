@@ -64,6 +64,8 @@ Picross.HintController.prototype = {
         hints.forEach(function (hint, idx) {
             let hintGroup = game.add.group();
             Object.keys(hint).forEach(function (key) {
+                let viewGroup = game.add.group();
+                hintGroup.add(viewGroup);
                 if (!hint[key].broken && hint[key].count !== 1) {
                     let graphics = game.add.graphics(Picross.Constants.cell.align / 2, Picross.Constants.cell.align / 2);
                     graphics.beginFill(0x333333, 1);
@@ -73,7 +75,7 @@ Picross.HintController.prototype = {
                     } else {
                         graphics.drawCircle(Picross.Constants.cell.align * ref.colorController.model[key].idx, 0, Picross.Constants.cell.size);
                     }
-                    hintGroup.add(graphics);
+                    viewGroup.add(graphics);
                 }
                 let style = {font: "bold " + Picross.Constants.text.size + "px Georgia", fill: ref.colorController.model[key].color.rgba, boundsAlignH: "center", boundsAlignV: "middle"};
 
@@ -81,7 +83,8 @@ Picross.HintController.prototype = {
                         ? game.add.text(0, Picross.Constants.cell.align * ref.colorController.model[key].idx, hint[key].count, style)
                         : game.add.text(Picross.Constants.cell.align * ref.colorController.model[key].idx, 0, hint[key].count, style);
                 text.setTextBounds(0, 0, Picross.Constants.cell.align, Picross.Constants.cell.align);
-                hintGroup.add(text);
+
+                viewGroup.add(text);
             });
 
             if (isVertical) {
@@ -111,10 +114,10 @@ Picross.HintController.prototype = {
         let rowError = !Object.keys(this.model.rows[row]).includes(inputKey);
         let colError = !Object.keys(this.model.cols[col]).includes(inputKey);
 
-        Object.keys(this.model.rows[row]).forEach(function (key) {
+        Object.keys(this.model.rows[row]).forEach(function (key, idx) {
             let hint = ref.model.rows[row][key];
+            let count = 0;
             if (!rowError) {
-                let count = 0;
                 for (let x = 0; x < bmpData.width; x++) {
                     if (input[row][x] !== undefined && objectHash.MD5(input[row][x]) === key) {
                         count++;
@@ -123,6 +126,64 @@ Picross.HintController.prototype = {
 
                 rowError = (hint.count < count);
             }
+
+            if (!rowError) {
+                if (hint.count === count) {
+                    hint.last = -1;
+                    let nowBroken = false;
+                    for (let x = 0; x < bmpData.width; x++) {
+                        if (input[row][x] !== undefined && objectHash.MD5(input[row][x]) === key) {
+                            if (hint.last === -1) {
+                                hint.last = x;
+                            }
+
+                            if (!nowBroken) {
+                                nowBroken = x - hint.last > 1;
+                            }
+                            hint.last = x;
+                        }
+                    }
+                    rowError = hint.broken !== nowBroken;
+                }
+            }
+
+//            let idx = ref.colorController.model[key].idx - (Object.keys(ref.colorController.model).length - )
+            ref.view.row.getAt(row).getAt(idx).alpha = (!rowError && hint.count === count) ? 0 : 1;
+        });
+
+        Object.keys(this.model.cols[col]).forEach(function (key, idx) {
+            let hint = ref.model.cols[col][key];
+            let count = 0;
+            if (!colError) {
+                for (let y = 0; y < bmpData.height; y++) {
+                    if (input[y][col] !== undefined && objectHash.MD5(input[y][col]) === key) {
+                        count++;
+                    }
+                }
+
+                colError = (hint.count < count);
+            }
+
+            if (!colError) {
+                if (hint.count === count) {
+                    hint.last = -1;
+                    let nowBroken = false;
+                    for (let y = 0; y < bmpData.height; y++) {
+                        if (input[y][col] !== undefined && objectHash.MD5(input[y][col]) === key) {
+                            if (hint.last === -1) {
+                                hint.last = y;
+                            }
+
+                            if (!nowBroken) {
+                                nowBroken = y - hint.last > 1;
+                            }
+                            hint.last = y;
+                        }
+                    }
+                    colError = hint.broken !== nowBroken;
+                }
+            }
+            ref.view.col.getAt(col).getAt(idx).alpha = (!colError && hint.count === count) ? 0 : 1;
         });
 
         ref.view.row.getAt(row).getAt(ref.view.row.getAt(row).length - 1).alpha = (rowError) ? 1 : 0;
