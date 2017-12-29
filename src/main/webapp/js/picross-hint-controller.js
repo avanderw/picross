@@ -147,7 +147,6 @@ Picross.HintController.prototype = {
                 }
             }
 
-//            let idx = ref.colorController.model[key].idx - (Object.keys(ref.colorController.model).length - )
             ref.view.row.getAt(row).getAt(idx).alpha = (!rowError && hint.count === count) ? 0 : 1;
         });
 
