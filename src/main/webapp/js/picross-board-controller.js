@@ -17,10 +17,8 @@ Picross.BoardController.prototype = {
     createView: function (bmpData, colorController, hintController) {
         let group = game.add.group();
         group.inputEnableChildren = true;
-        let ref = this;
         for (let y = 0; y < bmpData.height; y++) {
             for (let x = 0; x < bmpData.width; x++) {
-                let key = objectHash.MD5(bmpData.getPixelRGB(x, y));
                 let sprite = game.add.sprite(0, 0, colorController.model.eraser.texture);
                 this.model.input[y][x] = colorController.model.eraser.color;
                 sprite.col = x;

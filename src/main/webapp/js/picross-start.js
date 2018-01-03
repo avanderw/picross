@@ -31,9 +31,7 @@ function start() {
     let boardController = new Picross.BoardController(levelBmpData, colorController, hintController);
 
     boardController.view.align(width, height, Picross.Constants.cell.align, Picross.Constants.cell.align);
-
     hintController.view.row.alignTo(boardController.view.getBounds(game.stage), Phaser.RIGHT_TOP);
-
     hintController.view.col.alignTo(boardController.view.getBounds(game.stage), Phaser.TOP_LEFT);
 
     let picrossGroup = game.add.group();
@@ -45,6 +43,13 @@ function start() {
 
     colorController.view.alignTo(picrossGroup, Phaser.BOTTOM_CENTER);
     colorController.view.y += Picross.Constants.cell.size;
+
+    game.create.grid("grid", Picross.Constants.cell.align * width, Picross.Constants.cell.align * height, Picross.Constants.cell.align, Picross.Constants.cell.align, "rgba(255,255,255,0.8)", true, function () {
+        let grid = game.add.sprite(0, 0, "grid");
+        grid.x = boardController.view.x;
+        grid.y = boardController.view.y;
+        picrossGroup.add(grid);
+    });
 }
 
 function update() {
