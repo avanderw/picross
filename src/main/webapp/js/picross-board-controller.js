@@ -37,7 +37,7 @@ Picross.BoardController.prototype = {
             this.fill(sprite, colorController.selected, hintController);
         }, this);
         group.onChildInputOver.add(function (sprite) {
-            if (this.model.drawing && this.model.input[sprite.row][sprite.col] === colorController.model.eraser.color) {
+            if (this.model.drawing && (this.model.input[sprite.row][sprite.col] === colorController.model.eraser.color || colorController.selected === colorController.model.eraser)) {
                 this.fill(sprite, colorController.selected, hintController);
             }
         }, this);

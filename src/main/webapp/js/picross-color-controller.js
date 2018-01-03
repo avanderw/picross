@@ -7,8 +7,8 @@ Picross.ColorController = function (bmpData, textureSize) {
 Picross.ColorController.prototype = {
     constructor: Picross.ColorController,
     model: {
-        colors:{},
-        eraser:{}
+        colors: {},
+        eraser: {}
     },
     view: {},
     selected: {},
@@ -30,28 +30,43 @@ Picross.ColorController.prototype = {
             ref[key].idx = idx;
         });
 
-        this.model.eraser.color = new Phaser.Color.createColor(1, 2, 3, 0);
+        this.model.eraser.color = new Phaser.Color.createColor(255, 255, 255, 1);
         this.model.eraser.texture = game.make.bitmapData(textureSize, textureSize);
         this.model.eraser.texture.fill(this.model.eraser.color);
+        this.model.eraser.key = objectHash.MD5(new Phaser.Color.createColor(255, 255, 255, 1));
     },
     createView: function (textureSize) {
         this.view = game.add.group();
-        let ref = this;
+        this.view.inputEnableChildren = true;
+
+        let eraserBg = game.make.bitmapData(textureSize * 2, textureSize * 2);
+        ({r, g, b, a} = this.model.eraser.color);
+        eraserBg.fill(r, g, b, a);
+
+        let eraserSprite = game.add.sprite(0, 0, eraserBg);
+        eraserSprite.color = "eraser";
+        this.view.add(eraserSprite);
+
         Object.keys(this.model.colors).forEach(function (key) {
             let bg = game.make.bitmapData(textureSize * 2, textureSize * 2);
-            ({r, g, b, a} = ref.model.colors[key].color);
+            ({r, g, b, a} = this.model.colors[key].color);
             bg.fill(r, g, b, a);
 
             let sprite = game.add.sprite(0, 0, bg);
-            sprite.events.onInputDown.add(function () {
-                ref.select(key);
-            });
-            sprite.inputEnabled = true;
-            ref.view.add(sprite);
-        });
+            sprite.color = key;
+            this.view.add(sprite);
+        }, this);
+
+        this.view.onChildInputDown.add(function (sprite) {
+            this.select(sprite.color);
+        }, this);
         this.view.align(-1, 1, textureSize * 2 + 2, textureSize * 2 + 2);
     },
     select: function (key) {
-        this.selected = this.model.colors[key];
+        if (key === "eraser") {
+            this.selected = this.model.eraser;
+        } else {
+            this.selected = this.model.colors[key];
+        }
     }
 };

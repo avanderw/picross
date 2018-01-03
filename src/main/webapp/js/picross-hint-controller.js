@@ -114,12 +114,9 @@ Picross.HintController.prototype = {
         let rowError = !Object.keys(this.model.rows[row]).includes(inputKey);
         let colError = !Object.keys(this.model.cols[col]).includes(inputKey);
 
-        if (!rowError) {
-            for (let x = 0; x < input[row].length; x++) {
-                if (input[row][x] !== this.colorController.model.eraser.color && !rowError) {
-                    rowError = !Object.keys(this.model.rows[row]).includes(objectHash.MD5(input[row][x]));
-                }
-            }
+        if (!Object.keys(this.colorController.model.colors).includes(inputKey)) {
+            rowError = false;
+            colError = false;
         }
 
         if (!rowError) {
@@ -158,14 +155,6 @@ Picross.HintController.prototype = {
 
                 this.view.row.getAt(row).getAt(idx).alpha = (!rowError && hint.count === count) ? 0 : 1;
             }, this);
-        }
-
-        if (!colError) {
-            for (let y = 0; y < input.length; y++) {
-                if (input[y][col] !== this.colorController.model.eraser.color && !colError) {
-                    colError = !Object.keys(this.model.cols[col]).includes(objectHash.MD5(input[y][col]));
-                }
-            }
         }
 
         if (!colError) {
