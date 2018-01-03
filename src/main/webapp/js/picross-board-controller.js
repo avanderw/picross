@@ -21,7 +21,8 @@ Picross.BoardController.prototype = {
         for (let y = 0; y < bmpData.height; y++) {
             for (let x = 0; x < bmpData.width; x++) {
                 let key = objectHash.MD5(bmpData.getPixelRGB(x, y));
-                let sprite = game.add.sprite(0, 0, colorController.model[key].texture);
+                let sprite = game.add.sprite(0, 0, colorController.model.eraser.texture);
+                this.model.input[y][x] = colorController.model.eraser.color;
                 sprite.col = x;
                 sprite.row = y;
                 sprite.alpha = 0;
@@ -33,23 +34,23 @@ Picross.BoardController.prototype = {
         group.onChildInputDown.add(function (sprite) {
             this.model.drawing = true;
 
-            sprite.alpha = 1;
-            sprite.loadTexture(colorController.selected.texture);
-            this.model.input[sprite.row][sprite.col] = colorController.selected.color;
-            hintController.updateView(bmpData, ref.model.input, sprite.col, sprite.row);
+            this.fill(sprite, colorController.selected, hintController);
         }, this);
         group.onChildInputOver.add(function (sprite) {
-            if (this.model.drawing) {
-                sprite.alpha = 1;
-                sprite.loadTexture(colorController.selected.texture);
-                this.model.input[sprite.row][sprite.col] = colorController.selected.color;
-                hintController.updateView(bmpData, ref.model.input, sprite.col, sprite.row);
+            if (this.model.drawing && this.model.input[sprite.row][sprite.col] === colorController.model.eraser.color) {
+                this.fill(sprite, colorController.selected, hintController);
             }
         }, this);
         group.onChildInputUp.add(function (sprite) {
             this.model.drawing = false;
         }, this);
         this.view = group;
+    },
+    fill: function (sprite, color, hintController) {
+        sprite.alpha = 1;
+        sprite.loadTexture(color.texture);
+        this.model.input[sprite.row][sprite.col] = color.color;
+        hintController.updateView(this.model.input, sprite.col, sprite.row);
     }
 
 };
