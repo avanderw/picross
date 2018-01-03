@@ -108,6 +108,9 @@ Picross.HintController.prototype = {
     },
     updateView: function (bmpData, input, col, row) {
         let correctKey = objectHash.MD5(bmpData.getPixelRGB(col, row));
+        if (input[row][col] === undefined) {
+            return;
+        }
         let inputKey = objectHash.MD5(input[row][col]);
 
         let ref = this;
