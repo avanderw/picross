@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Grid</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <style>
+            body {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
+    </head>
+    <body>
+        <script src="js/lib/phaser.js" type="text/javascript"></script>
+        <script src="js/lib/object_hash.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            document.write('<scr' + 'ipt src="js/GridPattern.js?' + Math.random() + '" type="text/javascript"></scr' + 'ipt>');
+
+            let maxDpi = 3;
+            let game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, '', {preload: preload, create: create}, false, false);
+            let scaleRatio = window.devicePixelRatio / maxDpi;
+
+            function preload() {
+                game.stage.backgroundColor = Phaser.Color.getColor(255, 255, 255, 1);
+            }
+
+            function create() {
+                let pctrWdth = 11, pctrHght = 23, clrCnt = 4, bttnDmntn = 2, errCnt = 1;
+                let xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = game.width / xTtl;
+                let yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = game.height / yTtl;
+
+                GridPattern.create(xTtl, yTtl, Math.min(xPxlWdth, yPxlHght)).alpha = .3;
+                GridPattern.create(pctrWdth, pctrHght, Math.min(xPxlWdth, yPxlHght), true);
+            }
+        </script>
+    </body>
+</html>
