@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<!--
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+-->
+<html>
+    <head>
+        <title>Pattern</title>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    </head>
+    <body>
+        <script src="js/lib/phaser.js" type="text/javascript"></script>
+        <script src="js/lib/object_hash.js" type="text/javascript"></script>
+        <script type="text/javascript">
+
+            document.write('<scr' + 'ipt src="js/BitmapPattern.js?' + Math.random() + '" type="text/javascript"></scr' + 'ipt>');
+
+            var game = new Phaser.Game(1600, 1200, Phaser.AUTO, '', {preload: preload, create: create});
+
+            function preload() {
+                game.load.image('street-fighter', 'street-fighter.png');
+            }
+
+            let fighter, sprite;
+            function create() {
+                fighter = game.add.sprite(0, 0, "street-fighter")
+                fighter.texture.baseTexture.scaleMode = PIXI.scaleModes.NEAREST;
+                fighter.scale.setTo(4,4);
+
+                game.renderer.renderSession.roundPixels = true;
+                sprite = game.add.tileSprite(0, 0, 1600, 1200, BitmapPattern.create(BitmapPattern.DIAG_LIGHT_LEFT_4x4));
+//                sprite.scale.setTo(4, 4);
+                sprite.blendMode = Phaser.blendModes.MULTIPLY;
+
+            }
+        </script>
+    </body>
+</html>
