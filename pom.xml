@@ -51,6 +51,10 @@
                         <targetPath>${project.basedir}/src/main/webapp/js/debug/phaser-ce</targetPath>
                     </resource>
                     <resource>
+                        <directory>${project.basedir}/submodule/texgen.js/src</directory>
+                        <targetPath>${project.basedir}/src/main/webapp/js/lib</targetPath>
+                    </resource>
+                    <resource>
                         <directory>${project.basedir}/submodule/object-hash/dist</directory>
                         <targetPath>${project.basedir}/src/main/webapp/js/lib</targetPath>
                         <includes>

@@ -4,3 +4,6 @@
 [submodule "submodule/object-hash"]
 	path = submodule/object-hash
 	url = https://github.com/puleos/object-hash.git
+[submodule "submodule/texgen.js"]
+	path = submodule/texgen.js
+	url = https://github.com/mrdoob/texgen.js.git

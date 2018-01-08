@@ -32,15 +32,16 @@ and open the template in the editor.
             }
 
             function create() {
-                let pctrWdth = 11, pctrHght = 23, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
-                let xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = game.width / xTtl;
-                let yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = game.height / yTtl;
+                let gfx = game.add.graphics(0, 0);
+                gfx.beginFill(0x0);
+                gfx.drawRoundedRect(0, 0, 200, 50, 20);
+                gfx.endFill();
 
-                GridPattern.create(xTtl, yTtl, Math.min(xPxlWdth, yPxlHght)).alpha = .3;
-                
-                let board = GridPattern.create(pctrWdth, pctrHght, Math.min(xPxlWdth, yPxlHght), true);
-                board.x += (clrCnt + errCnt) * Math.min(xPxlWdth, yPxlHght);
-                board.y += (clrCnt + errCnt) * Math.min(xPxlWdth, yPxlHght);
+                let btn = game.add.button(0, 0, gfx.generateTexture(), function() {
+                    console.log("click");
+                });
+
+                game.add.text(0, 0, "click here", { font: "35px Arial", fill: "#ffffff", align: "center" });
             }
         </script>
     </body>

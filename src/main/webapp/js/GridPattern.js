@@ -5,16 +5,15 @@ GridPattern = {
         let gfx = game.add.graphics(0, 0);
 
         if (guides) {
+//            gfx.lineStyle(2, 0x666666);
             gfx.beginFill(0xe6e6e6);
             gfx.drawRect(0, Math.floor(height * 1 / 4) * cellSize, width * cellSize, cellSize);
-//        gfx.drawRect(Math.floor(width * 1 / 4) * cellSize, 0, cellSize, height * cellSize);
             gfx.drawRect(0, Math.floor(height * 3 / 4) * cellSize, width * cellSize, cellSize);
-//        gfx.drawRect(Math.floor(width * 3 / 4) * cellSize, 0, cellSize, height * cellSize);
             gfx.endFill();
 
             gfx.beginFill(0xcccccc);
-            gfx.drawRect(0, Math.floor(height / 2) * cellSize, width * cellSize, cellSize);
             gfx.drawRect(Math.floor(width / 2) * cellSize, 0, cellSize, height * cellSize);
+            gfx.drawRect(0, Math.floor(height / 2) * cellSize, width * cellSize, cellSize);
             gfx.endFill();
         }
 
