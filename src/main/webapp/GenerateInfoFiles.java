@@ -1,4 +1,5 @@
 
+import com.google.gson.Gson;
 import java.awt.image.BufferedImage;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -16,73 +17,37 @@ import javax.imageio.ImageIO;
 public class GenerateInfoFiles {
 
     public static void main(String[] args) throws IOException {
-        version2();
-    }
-
-    private static void version2() throws IOException {
-        Map<Path, List<Path>> index = new HashMap();
+        Map<String, DirectoryInfo> index = new HashMap();
         Files.walk(Paths.get("./src/main/webapp/levels")).forEach(path -> {
-            int end = (Files.isDirectory(path)) ? 0 : 1;
+            if (path.getNameCount() > 5) {
+                String key = path.subpath(4, path.getNameCount() - 1).toString().replace("\\","/");
+                index.putIfAbsent(key, new DirectoryInfo());
 
-            index.putIfAbsent(path.subpath(4, path.getNameCount() - end), new ArrayList());
-            if (!Files.isDirectory(path)) {
-                index.get(path.subpath(4, path.getNameCount() - end)).add(path.subpath(path.getNameCount() - end, path.getNameCount()));
-            } 
+                if (path.toString().endsWith(".png")) {
+                    LevelInfo level = new LevelInfo();
+                    level.path = path.subpath(path.getNameCount() - 1, path.getNameCount()).toString();
 
-        });
-        System.out.println(index);
-        index.keySet().forEach(path -> {
-            try {
-                StringBuilder sb = new StringBuilder();
-                index.get(path).forEach(filename -> {
+                    BufferedImage img;
                     try {
-                        BufferedImage img = ImageIO.read(Paths.get("./src/main/webapp/" + path + "/" + filename).toFile());
-                        if (img != null) {
-                            sb.append(filename)
-                                    .append(":")
-                                    .append(img.getWidth())
-                                    .append(":")
-                                    .append(img.getHeight())
-                                    .append("\n");
-                        } else {
-                            sb.append(filename)
-                                    .append("\n");
-                        }
+                        img = ImageIO.read(path.toFile());
+                        level.width = img.getWidth();
+                        level.height = img.getHeight();
                     } catch (IOException ex) {
                         Logger.getLogger(GenerateInfoFiles.class.getName()).log(Level.SEVERE, null, ex);
                     }
-                });
-                Files.write(Paths.get("./src/main/webapp").resolve(path.resolve(Paths.get("index.info"))), sb.toString().getBytes());
-                System.out.println(Paths.get("./src/main/webapp").resolve(path.resolve(Paths.get("index.info"))));
-                System.out.println(sb);
-            } catch (IOException ex) {
-                Logger.getLogger(GenerateInfoFiles.class.getName()).log(Level.SEVERE, null, ex);
-            }
-        });
-    }
 
-    private static void version1() throws IOException {
-        StringBuilder sb = new StringBuilder();
-        Pattern left = Pattern.compile(".*(\\d+)x.*");
-        Pattern right = Pattern.compile(".*x(\\d+).*");
-        Files.list(Paths.get("./src/main/webapp/levels")).filter(path -> path.toString().endsWith(".png")).forEach(path -> {
+                    index.get(key).levels.add(level);
+                } else if (Files.isDirectory(path)) {
+                    index.get(key).directories.add(path.subpath(path.getNameCount() - 1, path.getNameCount()).toString());
+                }
+            }
+        });
+        index.entrySet().forEach(entry -> {
             try {
-                BufferedImage img = ImageIO.read(path.toFile());
-                sb.append("levels/")
-                        .append(path.getName(5))
-                        .append(":")
-                        .append(img.getWidth())
-                        .append(":")
-                        .append(img.getHeight())
-                        .append("\n");
+                Files.write(Paths.get("./src/main/webapp").resolve(entry.getKey()).resolve(Paths.get("index.info")), entry.getValue().toString().getBytes());
             } catch (IOException ex) {
                 Logger.getLogger(GenerateInfoFiles.class.getName()).log(Level.SEVERE, null, ex);
             }
         });
-        if (sb.length() > 1) {
-            sb.delete(sb.length() - 1, sb.length());
-        }
-        Files.write(Paths.get("./src/main/webapp/levels/index.info"), sb.toString().getBytes());
-        System.out.println(sb.toString());
     }
 }

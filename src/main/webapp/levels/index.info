@@ -1,3 +1,1 @@
-index.info
-test-11x11.png:11:11
-test-5x5.png:5:5
+{"directories":["group-01","group-02"],"levels":[{"width":11,"height":11,"path":"test-11x11.png"},{"width":5,"height":5,"path":"test-5x5.png"}]}
