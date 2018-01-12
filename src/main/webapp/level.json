@@ -1,8 +1,8 @@
 {
-  "url": "levels",
+  "name": "levels",
   "directories": [
     {
-      "url": "levels/group-01",
+      "name": "group-01",
       "directories": [],
       "levels": [
         {
@@ -13,7 +13,7 @@
       ]
     },
     {
-      "url": "levels/group-02",
+      "name": "group-02",
       "directories": [],
       "levels": [
         {

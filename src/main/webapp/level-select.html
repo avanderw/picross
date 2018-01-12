@@ -29,7 +29,7 @@ and open the template in the editor.
 
             function preload() {
                 game.stage.backgroundColor = Phaser.Color.getColor(255, 255, 255, 1);
-                game.load.text("idx", "levels/index.info").onFileComplete.add(function (progress, key, success) {
+                game.load.text("idx", "level.json").onFileComplete.add(function (progress, key, success) {
                     console.log(progress);
                     console.log(key);
                     console.log(success);
@@ -39,17 +39,36 @@ and open the template in the editor.
             }
 
             function create() {
-                let dir = JSON.parse(game.cache.getText("idx"));
+                let history = {};
+                let originator = {};
+                let caretaker = {};
+                let font = {font: "35px Arial", fill: "#ffffff", align: "center"};
+
                 let gfx = game.add.graphics(0, 0);
                 gfx.beginFill(0x0);
                 gfx.drawRoundedRect(0, 0, 200, 50, 20);
                 gfx.endFill();
+                let tex = gfx.generateTexture();
+                gfx.destroy();
 
-                let btn = game.add.button(0, 0, gfx.generateTexture(), function () {
-                    console.log("click");
+                let buttons = game.add.group();
+                let levelData = JSON.parse(game.cache.getText("idx"));
+                levelData.directories.forEach(function (item, idx) {
+                    let txt = game.add.text(0, 50 * idx, item.name, font);
+                    let btn = game.add.button(0, 50 * idx, tex, function () {
+                        console.log("click:", item.name);
+                        buttons.destroy();
+                    });
+
+                    buttons.add(btn);
+                    buttons.add(txt);
                 });
 
-                game.add.text(0, 0, "click here", {font: "35px Arial", fill: "#ffffff", align: "center"});
+
+                let btn = game.add.button(0, game.height - 50, tex, function () {
+                    buttons.destroy();
+                });
+                let txt = game.add.text(0, game.height - 50, "back", font);
             }
         </script>
     </body>

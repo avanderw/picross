@@ -5,12 +5,12 @@ import java.util.List;
 
 public class DirectoryInfo {
 
-    public final String url;
+    public final String name;
     public List<DirectoryInfo> directories = new ArrayList();
     public List<LevelInfo> levels = new ArrayList();
 
-    DirectoryInfo(String url) {
-        this.url = url;
+    DirectoryInfo(String name) {
+        this.name = name;
     }
 
     @Override

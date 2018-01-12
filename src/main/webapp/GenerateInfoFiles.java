@@ -18,7 +18,7 @@ public class GenerateInfoFiles {
     }
 
     static public DirectoryInfo directoryHandler(Path directory) throws IOException {
-        DirectoryInfo info = new DirectoryInfo(directory.subpath(4, directory.getNameCount()).toString().replace("\\", "/"));
+        DirectoryInfo info = new DirectoryInfo(directory.subpath(directory.getNameCount()-1, directory.getNameCount()).toString().replace("\\", "/"));
 
         Files.newDirectoryStream(directory, path -> path.toFile().isDirectory()).forEach(path -> {
             try {
@@ -44,6 +44,7 @@ public class GenerateInfoFiles {
         BufferedImage img = ImageIO.read(path.toFile());
         info.width = img.getWidth();
         info.height = img.getHeight();
+        
         return info;
     }
 }
