@@ -29,19 +29,27 @@ and open the template in the editor.
 
             function preload() {
                 game.stage.backgroundColor = Phaser.Color.getColor(255, 255, 255, 1);
+                game.load.text("idx", "levels/index.info").onFileComplete.add(function (progress, key, success) {
+                    console.log(progress);
+                    console.log(key);
+                    console.log(success);
+                });
+
+
             }
 
             function create() {
+                let dir = JSON.parse(game.cache.getText("idx"));
                 let gfx = game.add.graphics(0, 0);
                 gfx.beginFill(0x0);
                 gfx.drawRoundedRect(0, 0, 200, 50, 20);
                 gfx.endFill();
 
-                let btn = game.add.button(0, 0, gfx.generateTexture(), function() {
+                let btn = game.add.button(0, 0, gfx.generateTexture(), function () {
                     console.log("click");
                 });
 
-                game.add.text(0, 0, "click here", { font: "35px Arial", fill: "#ffffff", align: "center" });
+                game.add.text(0, 0, "click here", {font: "35px Arial", fill: "#ffffff", align: "center"});
             }
         </script>
     </body>
