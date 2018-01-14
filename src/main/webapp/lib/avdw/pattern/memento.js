@@ -25,3 +25,27 @@ avdw.Memento.prototype = {
         this.history.push(memento);
     }
 };
+
+
+var MyObject = (function () {
+
+    // Constructor
+    function MyObject(foo) {
+        this._foo = foo;
+    }
+
+    function privateFun(prefix) {
+        return prefix + this._foo;
+    }
+
+    MyObject.prototype.publicFun = function () {
+        return privateFun.call(this, '>>');
+    };
+
+    return MyObject;
+})();
+
+
+var myObject = new MyObject('bar');
+myObject.publicFun();      // Returns '>>bar'
+myObject.privateFun('>>'); // ReferenceError: private is not defined
