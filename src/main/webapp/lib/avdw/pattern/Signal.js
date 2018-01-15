@@ -1,27 +1,34 @@
+/* global objectHash */
+
 if (typeof avdw === 'undefined') {
     avdw = {};
 }
 avdw.Signal = function (name) {
     this.name = name;
-    this.listeners = [];
+    this.listeners = {};
 };
 avdw.Signal.prototype = {
     subscribe: function (consumer, context) {
-        console.log("subscribing to", this.name, context);
-        this.listeners.push({consumer:consumer, context:context});
+        let listener = {consumer:consumer, context:context};
+        let key = objectHash.MD5(listener);
+        this.listeners[key] = listener;
+
+        console.log(key, 'subscribed to', this.name);
     },
     unsubscribe: function (consumer, context) {
-        console.log("unsubscribing from", this.name);
-        let idx = this.listeners.indexOf({consumer: consumer, context: context});
-        if (idx > -1) {
-            this.listeners.splice(idx, 1);
+        let listener = {consumer:consumer, context:context};
+        let key = objectHash.MD5(listener);
+
+        if (key in this.listeners) {
+            delete this.listeners[key];
         }
+        console.log(key, "unsubscribed from", this.name);
     },
     fire: function (payload) {
         console.log("firing", this.name);
-        this.listeners.forEach(function (listener) {
-            listener.consumer(payload, listener.context);
-        });
+        Object.keys(this.listeners).forEach(function (key) {
+            this.listeners[key].consumer(payload, this.listeners[key].context);
+        }, this);
     }
 };
 
