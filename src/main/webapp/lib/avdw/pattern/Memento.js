@@ -4,32 +4,25 @@ if (typeof avdw === 'undefined') {
     avdw = {};
 }
 
-avdw.Memento = function (state, changeSignal) {
-    this.state = state;
-    this.history = [];
-
-    this.save(null, this);
-    changeSignal.subscribe(this.save, this);
-};
-
-avdw.Memento.prototype = {
-    serialize: function () {
+avdw.Memento = class Memento {
+    constructor(state) {
+        this.state = state;
+        this.history = [];
+    }
+    serialize() {
         console.log('serializing state');
         return Object.assign({}, this.state);
-    },
-    deserialize: function (memento) {
+    }
+
+    deserialize(memento) {
         console.log('deserializing state');
         Object.assign(this.state, memento);
-    },
-    save: function (payload, context) {
+    }
+    save() {
         console.log('saving state');
-        if (arguments.length < 2) {
-            context = this;
-        }
-
-        context.history.push(context.serialize());
-    },
-    restore: function () {
+        this.history.push(this.serialize());
+    }
+    restore() {
         console.log('restoring state');
         let memento = this.history.pop();
         this.deserialize(memento);
@@ -39,13 +32,8 @@ avdw.Memento.prototype = {
 (function () {
     console.log('\nTESTING: Memento.js');
     let state = {a: 0};
-    let signal = new avdw.Signal("signal{state-change}");
-    let memento = new avdw.Memento(state, signal);
+    let memento = new avdw.Memento(state);
     console.log('state', state);
-
-    state.a = 1;
-    console.log('state', state);
-    signal.fire('update');
 
     state.a = 2;
     console.log('state', state);
