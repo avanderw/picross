@@ -14,7 +14,19 @@
     },
     {
       "name": "group-02",
-      "directories": [],
+      "directories": [
+        {
+          "name": "group-03",
+          "directories": [],
+          "levels": [
+            {
+              "width": 5,
+              "height": 5,
+              "filename": "levels/group-02/group-03/test-5x5.png"
+            }
+          ]
+        }
+      ],
       "levels": [
         {
           "width": 11,

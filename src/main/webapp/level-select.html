@@ -22,27 +22,25 @@ and open the template in the editor.
         <script type="text/javascript">
 
             document.write('<scr' + 'ipt src="js/GridPattern.js?' + Math.random() + '" type="text/javascript"></scr' + 'ipt>');
+//            document.write('<scr' + 'ipt src="lib/avdw/pattern/Signal.js?' + Math.random() + '" type="text/javascript"></scr' + 'ipt>');
+            document.write('<scr' + 'ipt src="lib/avdw/pattern/Memento.js?' + Math.random() + '" type="text/javascript"></scr' + 'ipt>');
 
             let maxDpi = 3;
             let game = new Phaser.Game(window.innerWidth * window.devicePixelRatio, window.innerHeight * window.devicePixelRatio, Phaser.AUTO, '', {preload: preload, create: create});
             let scaleRatio = window.devicePixelRatio / maxDpi;
 
+            let menu, memento;
             function preload() {
                 game.stage.backgroundColor = Phaser.Color.getColor(255, 255, 255, 1);
                 game.load.text("idx", "level.json").onFileComplete.add(function (progress, key, success) {
-                    console.log(progress);
-                    console.log(key);
-                    console.log(success);
+                    menu = {directories: [], levels: []};
+                    memento = new avdw.Memento(menu);
                 });
-
-
             }
 
+            let back_btn;
             function create() {
-                let history = {};
-                let originator = {};
-                let caretaker = {};
-                let font = {font: "35px Arial", fill: "#ffffff", align: "center"};
+                let font = {font: "35px Arial", fill: "#cccccc", align: "center"};
 
                 let gfx = game.add.graphics(0, 0);
                 gfx.beginFill(0x0);
@@ -53,22 +51,40 @@ and open the template in the editor.
 
                 let buttons = game.add.group();
                 let levelData = JSON.parse(game.cache.getText("idx"));
-                levelData.directories.forEach(function (item, idx) {
+
+                menu.directories = levelData.directories;
+                menu.levels = levelData.levels;
+                buildMenu(font, tex, buttons);
+
+                back_btn = game.add.button(0, game.height - 50, tex, () => {
+                    buttons.destroy(true, true);
+                    memento.restore();
+                    buildMenu(font, tex, buttons);
+                });
+                let txt = game.add.text(0, game.height - 50, "back", font);
+            }
+
+            function buildMenu(font, tex, buttons) {
+                console.log(menu);
+                menu.directories.forEach((item, idx) => {
                     let txt = game.add.text(0, 50 * idx, item.name, font);
-                    let btn = game.add.button(0, 50 * idx, tex, function () {
+                    let btn = game.add.button(0, 50 * idx, tex, () => {
                         console.log("click:", item.name);
-                        buttons.destroy();
+                        memento.save();
+                        menu.directories = item.directories;
+                        menu.levels = item.levels;
+                        buttons.destroy(true, true);
+                        buildMenu(font, tex, buttons);
                     });
 
                     buttons.add(btn);
                     buttons.add(txt);
                 });
 
-
-                let btn = game.add.button(0, game.height - 50, tex, function () {
-                    buttons.destroy();
+                menu.levels.forEach((item, idx) => {
+                    let txt = game.add.text(0, 50 * idx + 50 * menu.directories.length, item.filename, font);
+                    buttons.add(txt);
                 });
-                let txt = game.add.text(0, game.height - 50, "back", font);
             }
         </script>
     </body>
