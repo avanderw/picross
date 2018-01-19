@@ -1,6 +1,5 @@
 import avdw.picross.menu.Menu;
 import openfl.display.Sprite;
-import openfl.Lib;
 
 /**
  * ...

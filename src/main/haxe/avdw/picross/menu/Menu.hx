@@ -1,9 +1,13 @@
 package avdw.picross.menu;
 
 import avdw.create.grid.Grid;
-import flash.events.Event;
-import openfl.display.Graphics;
+import format.SVG;
+import haxe.Json;
+import openfl.Assets;
+import openfl.events.Event;
 import openfl.display.Sprite;
+import openfl.text.TextField;
+import openfl.text.TextFormatAlign;
 
 /**
  * ...
@@ -11,35 +15,57 @@ import openfl.display.Sprite;
  */
 class Menu extends Sprite
 {
+	var lvlData:Dynamic;
 
 	public function new()
 	{
 		super();
-		
-		//addChild(new Grid(11, 23, 10, true));
+		lvlData = Json.parse(Assets.getText("json/level.json"));
+		trace(lvlData);
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
-	
-	function start(e:Event):Void 
+
+	function start(e:Event):Void
 	{
-		trace("john");
 
-		var pctrWdth = 11, pctrHght = 23, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
-		var xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = stage.width / xTtl;
-		var yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = stage.height / yTtl;
+		var xTtl = 5, xPxlWdth = stage.stageWidth / xTtl;
+		var yTtl = 11, yPxlHght = stage.stageHeight / yTtl;
+		var size = Math.min(xPxlWdth, yPxlHght);
 
-		var bgGrid = Grid.create(xTtl, yTtl, cast Math.min(xPxlWdth, yPxlHght));
+		var bgGrid = Grid.create(yTtl,xTtl, cast size, true);
 		bgGrid.alpha = .3;
 		addChild(bgGrid);
-		
-		var fgGrid = Grid.create(pctrWdth, pctrHght, cast Math.min(xPxlWdth, yPxlHght), true);
-		fgGrid.x += (clrCnt + errCnt) * Math.min(xPxlWdth, yPxlHght);
-		fgGrid.y += (clrCnt + errCnt) * Math.min(xPxlWdth, yPxlHght);
-		addChild(fgGrid);
-		
-		addChild(new Grid(23, 11, 32, true));
+
+		var svg = new SVG(Assets.getText("img/menu-button.svg"));
+
+		for (i in 0...lvlData.directories.length)
+		{
+			trace(lvlData.directories[i]);
+			
+			var btn = new Sprite();
+			var btnBg = new Sprite();
+			var text = new TextField();
+			
+			btn.addChild(btnBg);
+			btn.addChild(text);
+			addChild(btn);
+			
+			svg.render(btnBg.graphics);
+			btnBg.width = 3 * size;
+			btnBg.height = 1 * size;
+			
+			
+			text.text = lvlData.directories[i].name;
+			text.width = btn.width;
+			text.height = btn.height;
+			text.selectable = false;
+			
+			text.getTextFormat().align = TextFormatAlign.CENTER;
+			
+			btn.x = 1 * size;
+			btn.y = i * size;
+		}
+
 	}
-	
-	
 
 }

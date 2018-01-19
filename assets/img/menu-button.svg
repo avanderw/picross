@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+<svg xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#" xmlns="http://www.w3.org/2000/svg" xmlns:cc="http://creativecommons.org/ns#" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:dc="http://purl.org/dc/elements/1.1/" xmlns:svg="http://www.w3.org/2000/svg" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd" xmlns:ns1="http://sozi.baierouge.fr" id="svg6783" viewBox="0 0 676.63 207.36" version="1.1" inkscape:version="0.91 r13725">
+  <defs id="defs6785">
+    <filter id="filter3922-0" color-interpolation-filters="sRGB">
+      <feGaussianBlur id="feGaussianBlur3924-2" stdDeviation="1.7928571"/>
+    </filter>
+    <linearGradient id="linearGradient6654" y2="68.076" gradientUnits="userSpaceOnUse" x2="170" gradientTransform="translate(373.76)" y1="119.51" x1="170">
+      <stop id="stop3867-1" style="stop-color:#aa8800" offset="0"/>
+      <stop id="stop3869-9" style="stop-color:#aa8800;stop-opacity:0" offset="1"/>
+    </linearGradient>
+    <linearGradient id="linearGradient7549" y2="135.22" gradientUnits="userSpaceOnUse" x2="171.43" gradientTransform="matrix(.96104 0 0 1 379.65 1.5714)" y1="48.076" x1="172.86">
+      <stop id="stop3882-8" style="stop-color:#ffffff" offset="0"/>
+      <stop id="stop3884-9" style="stop-color:#ffffff;stop-opacity:0" offset="1"/>
+    </linearGradient>
+  </defs>
+  <g id="layer1" transform="translate(66.218 -171.87)">
+    <g id="g6646" transform="matrix(2.1336 0 0 2.1336 -911.53 58.571)">
+      <rect id="rect4153" style="filter:url(#filter3922-0);fill:#000000" transform="matrix(1.0099 0 0 1.0246 371.99 -2.8557)" ry="24.286" width="280" y="62.362" x="38.571" height="78.571"/>
+      <rect id="rect4155" style="opacity:.78319;fill:#ffff00" ry="24.286" height="78.571" width="280" y="60.934" x="410.9"/>
+      <rect id="rect4157" style="fill:url(#linearGradient6654)" ry="24.286" height="78.571" width="280" y="62.362" x="412.33"/>
+      <rect id="rect4165" style="fill:#aa8800" ry="21.636" height="70" width="267.14" y="65.934" x="418.76"/>
+      <rect id="rect4169" style="fill:#d7cc70" ry="20.753" height="67.143" width="261.43" y="67.362" x="421.61"/>
+      <path id="path4159" style="fill:url(#linearGradient7549)" d="m661.6 66.603c-75.497 0.78576-151.03-0.55611-226.5 0.75-9.1212 2.2961-15.993 11.611-15.737 21.438 46.04 25.338 99.369 29.225 150.55 29.219 38.004-0.4729 76.316-5.6127 112.29-18.688 4.9841-13.627-3.4842-31.419-18.019-32.688-0.85989-0.04642-1.7224-0.10605-2.5828-0.03125z"/>
+    </g>
+  </g>
+  <metadata>
+    <rdf:RDF>
+      <cc:Work>
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
+        <cc:license rdf:resource="http://creativecommons.org/licenses/publicdomain/"/>
+        <dc:publisher>
+          <cc:Agent rdf:about="http://openclipart.org/">
+            <dc:title>Openclipart</dc:title>
+          </cc:Agent>
+        </dc:publisher>
+        <dc:title>Gold Button 010</dc:title>
+        <dc:date>2010-10-10T23:55:42</dc:date>
+        <dc:description>Golden Buttons and Banners.</dc:description>
+        <dc:source>https://openclipart.org/detail/89449/gold-button-010-by-inky2010</dc:source>
+        <dc:creator>
+          <cc:Agent>
+            <dc:title>inky2010</dc:title>
+          </cc:Agent>
+        </dc:creator>
+        <dc:subject>
+          <rdf:Bag>
+            <rdf:li>3D</rdf:li>
+            <rdf:li>banner</rdf:li>
+            <rdf:li>bend</rdf:li>
+            <rdf:li>button</rdf:li>
+            <rdf:li>gold</rdf:li>
+            <rdf:li>golden</rdf:li>
+            <rdf:li>header</rdf:li>
+            <rdf:li>heading</rdf:li>
+            <rdf:li>icon</rdf:li>
+            <rdf:li>inkscape</rdf:li>
+            <rdf:li>inky2010</rdf:li>
+            <rdf:li>internet</rdf:li>
+            <rdf:li>shadow</rdf:li>
+            <rdf:li>vector</rdf:li>
+            <rdf:li>web</rdf:li>
+            <rdf:li>web page</rdf:li>
+          </rdf:Bag>
+        </dc:subject>
+      </cc:Work>
+      <cc:License rdf:about="http://creativecommons.org/licenses/publicdomain/">
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Reproduction"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#Distribution"/>
+        <cc:permits rdf:resource="http://creativecommons.org/ns#DerivativeWorks"/>
+      </cc:License>
+    </rdf:RDF>
+  </metadata>
+</svg>

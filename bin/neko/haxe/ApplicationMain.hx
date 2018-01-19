@@ -24,7 +24,7 @@ import haxe.macro.Expr;
 		
 		var config = {
 			
-			build: "30",
+			build: "31",
 			company: "Andrew van der Westhuizen",
 			file: "picross",
 			fps: 60,

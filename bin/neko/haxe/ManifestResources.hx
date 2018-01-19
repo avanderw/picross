@@ -53,10 +53,7 @@ import sys.FileSystem;
 		
 		var data, manifest, library;
 		
-		data = '{"name":null,"assets":"ah","version":2,"libraryArgs":[],"libraryType":null}';
-		manifest = AssetManifest.parse (data, rootPath);
-		library = AssetLibrary.fromManifest (manifest);
-		Assets.registerLibrary ("default", library);
+		Assets.libraryPaths["default"] = rootPath + "manifest/default.json";
 		
 		
 		library = Assets.getLibrary ("default");
@@ -73,12 +70,13 @@ import sys.FileSystem;
 #if !display
 #if flash
 
+@:keep @:bind #if display private #end class __ASSET__img_menu_button_svg extends null { }
+@:keep @:bind #if display private #end class __ASSET__json_level_json extends null { }
 @:keep @:bind #if display private #end class __ASSET__manifest_default_json extends null { }
 
 
 #elseif (desktop || cpp)
 
-@:file("bin/neko/obj/tmp/manifest/default.json") #if display private #end class __ASSET__manifest_default_json extends haxe.io.Bytes {}
 
 
 

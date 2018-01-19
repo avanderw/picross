@@ -16,10 +16,12 @@
 	<source path="src/main/haxe" />
 	<haxelib name="openfl" />
 	<haxelib name="actuate" />
+	<haxelib name="svg" />
 	
 	<!-- assets -->
 	<icon path="assets/openfl.svg" />
 	<assets path="assets/img" rename="img" />
+	<assets path="assets/json" rename="json" />
 	
 	<!-- optimize output
 	<haxeflag name="-dce full" /> -->
