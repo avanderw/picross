@@ -1,6 +1,7 @@
 package avdw.picross.menu;
 
 import avdw.create.grid.Grid;
+import avdw.pattern.Memento;
 import format.SVG;
 import haxe.Json;
 import openfl.Assets;
@@ -21,13 +22,20 @@ class Menu extends Sprite
 	{
 		super();
 		lvlData = Json.parse(Assets.getText("json/level.json"));
-		trace(lvlData);
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
 	function start(e:Event):Void
 	{
 
+		var memento:Memento = new Memento(lvlData);
+		trace(lvlData);
+		memento.save();
+		lvlData.directories = {};
+		trace(lvlData);
+		memento.restore();
+		trace(lvlData);
+		
 		var xTtl = 5, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = 11, yPxlHght = stage.stageHeight / yTtl;
 		var size = Math.min(xPxlWdth, yPxlHght);
