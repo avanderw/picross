@@ -4,9 +4,12 @@ import avdw.create.grid.Grid;
 import avdw.pattern.Memento;
 import format.SVG;
 import haxe.Json;
+import haxe.Serializer;
+import haxe.crypto.Md5;
 import openfl.Assets;
 import openfl.events.Event;
 import openfl.display.Sprite;
+import openfl.events.MouseEvent;
 import openfl.text.TextField;
 import openfl.text.TextFormatAlign;
 
@@ -29,12 +32,6 @@ class Menu extends Sprite
 	{
 
 		var memento:Memento = new Memento(lvlData);
-		trace(lvlData);
-		memento.save();
-		lvlData.directories = {};
-		trace(lvlData);
-		memento.restore();
-		trace(lvlData);
 		
 		var xTtl = 5, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = 11, yPxlHght = stage.stageHeight / yTtl;
@@ -62,6 +59,7 @@ class Menu extends Sprite
 			btnBg.width = 3 * size;
 			btnBg.height = 1 * size;
 			
+			trace(Md5.encode(Serializer.run(lvlData.directories[i])));
 			
 			text.text = lvlData.directories[i].name;
 			text.width = btn.width;
@@ -72,8 +70,15 @@ class Menu extends Sprite
 			
 			btn.x = 1 * size;
 			btn.y = i * size;
+
+			btn.addEventListener(MouseEvent.CLICK, btnClick);
 		}
 
+	}
+	
+	function btnClick(e:MouseEvent):Void 
+	{
+		trace(e.currentTarget);
 	}
 
 }
