@@ -6,6 +6,7 @@ import format.SVG;
 import haxe.Json;
 import haxe.Serializer;
 import haxe.crypto.Md5;
+import haxe.ds.StringMap;
 import openfl.Assets;
 import openfl.events.Event;
 import openfl.display.Sprite;
@@ -19,66 +20,131 @@ import openfl.text.TextFormatAlign;
  */
 class Menu extends Sprite
 {
-	var lvlData:Dynamic;
+	var menuBtns:Array<Sprite> = new Array();
+	var directoryMap:Map<String, Dynamic> = new StringMap();
+
+	var directoryData:Dynamic;
+	var gridSize:Int;
+	var menuMemento:Memento;
+	var svg:SVG;
+	var backBtn:Sprite;
 
 	public function new()
 	{
 		super();
-		lvlData = Json.parse(Assets.getText("json/level.json"));
+		directoryData = Json.parse(Assets.getText("json/level.json"));
+		menuMemento = new Memento(directoryData);
+
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
 	function start(e:Event):Void
 	{
-
-		var memento:Memento = new Memento(lvlData);
+		trace("start");
+		svg = new SVG(Assets.getText("img/menu-button.svg"));
 		
 		var xTtl = 5, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = 11, yPxlHght = stage.stageHeight / yTtl;
-		var size = Math.min(xPxlWdth, yPxlHght);
+		gridSize = cast Math.min(xPxlWdth, yPxlHght);
 
-		var bgGrid = Grid.create(yTtl,xTtl, cast size, true);
+		var bgGrid = Grid.create(yTtl,xTtl, gridSize);
 		bgGrid.alpha = .3;
 		addChild(bgGrid);
+		
+		backBtn = new Sprite();
+		var backBtnBg:Sprite = new Sprite();
+		var backBtnText:TextField = new TextField();
+		
+		svg.render(backBtnBg.graphics);
+		backBtnBg.width = 3 * gridSize;
+		backBtnBg.height = 1 * gridSize;
+		
+		backBtnText.text = "back";
+		backBtnText.width = backBtnBg.width;
+		backBtnText.height = backBtnBg.height;
+		backBtnText.selectable = false;
+		backBtnText.getTextFormat().align = TextFormatAlign.CENTER;
+		
+		backBtn.addChild(backBtnBg);
+		backBtn.addChild(backBtnText);
+		addChild(backBtn);
+		
+		backBtn.addEventListener(MouseEvent.CLICK, function (event) {
+			trace("click,back");
+			menuMemento.restore();
+			destroyMenu();
+			buildMenu();
+		});
+		
+		buildMenu();
+	}
 
-		var svg = new SVG(Assets.getText("img/menu-button.svg"));
-
-		for (i in 0...lvlData.directories.length)
+	function buildMenu():Void {
+		trace("building",directoryData);
+		for (i in 0...directoryData.directories.length)
 		{
-			trace(lvlData.directories[i]);
-			
-			var btn = new Sprite();
+			var directoryBtn = new Sprite();
 			var btnBg = new Sprite();
 			var text = new TextField();
-			
-			btn.addChild(btnBg);
-			btn.addChild(text);
-			addChild(btn);
-			
+
+			directoryBtn.addChild(btnBg);
+			directoryBtn.addChild(text);
+			addChild(directoryBtn);
+
 			svg.render(btnBg.graphics);
-			btnBg.width = 3 * size;
-			btnBg.height = 1 * size;
-			
-			trace(Md5.encode(Serializer.run(lvlData.directories[i])));
-			
-			text.text = lvlData.directories[i].name;
-			text.width = btn.width;
-			text.height = btn.height;
+			btnBg.width = 3 * gridSize;
+			btnBg.height = 1 * gridSize;
+
+			var key = md5(directoryData.directories[i]);
+			directoryMap.set(key, directoryData.directories[i]);
+			directoryBtn.name = key;
+
+			text.text = directoryData.directories[i].name;
+			text.width = directoryBtn.width;
+			text.height = directoryBtn.height;
 			text.selectable = false;
-			
+
 			text.getTextFormat().align = TextFormatAlign.CENTER;
-			
-			btn.x = 1 * size;
-			btn.y = i * size;
 
-			btn.addEventListener(MouseEvent.CLICK, btnClick);
+			directoryBtn.x = 1 * gridSize;
+			directoryBtn.y = i * gridSize;
+
+			directoryBtn.addEventListener(MouseEvent.CLICK, directoryClick);
+			menuBtns.push(directoryBtn);
 		}
-
+		
+		backBtn.x = 1 * gridSize;
+		backBtn.y = directoryData.directories.length * gridSize;
 	}
 	
-	function btnClick(e:MouseEvent):Void 
+	function directoryClick(e:MouseEvent):Void
 	{
-		trace(e.currentTarget);
+		var key:String = cast (e.currentTarget, Sprite).name;
+		trace("click",key,directoryMap[key]);
+		menuMemento.save();
+		
+		for (field in Reflect.fields(directoryMap[key])) {
+			Reflect.setField(directoryData, field, Reflect.field(directoryMap[key], field));
+		}
+		
+		destroyMenu();
+		buildMenu();
+	}
+	
+	function destroyMenu() {
+		trace("destroyMenu");
+		var btn = menuBtns.pop();
+		while (btn != null)
+		{
+			btn.removeEventListener(MouseEvent.CLICK, directoryClick);
+			removeChild(btn);
+			btn = menuBtns.pop();
+		}
+		
+	}
+	
+	inline function md5(obj:Dynamic):String {
+		return Md5.encode(Serializer.run(obj));
 	}
 
 }
