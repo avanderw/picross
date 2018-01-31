@@ -1,7 +1,6 @@
 package avdw.picross.menu;
 
 import avdw.create.grid.Grid;
-import avdw.pattern.Memento;
 import format.SVG;
 import haxe.Json;
 import haxe.Serializer;
@@ -12,7 +11,7 @@ import openfl.events.Event;
 import openfl.display.Sprite;
 import openfl.events.MouseEvent;
 import openfl.text.TextField;
-import openfl.text.TextFormatAlign;
+import openfl.text.TextFieldAutoSize;
 
 /**
  * ...
@@ -21,28 +20,39 @@ import openfl.text.TextFormatAlign;
 class Menu extends Sprite
 {
 	var menuBtns:Array<Sprite> = new Array();
+	var menuHistory:Array<String> = new Array();
+	var menuIdx:String;
+	
 	var directoryMap:Map<String, Dynamic> = new StringMap();
 
-	var directoryData:Dynamic;
 	var gridSize:Int;
-	var menuMemento:Memento;
 	var svg:SVG;
 	var backBtn:Sprite;
 
 	public function new()
 	{
 		super();
-		directoryData = Json.parse(Assets.getText("json/level.json"));
-		menuMemento = new Memento(directoryData);
-
+		
+		var directoryData = Json.parse(Assets.getText("json/level.json"));
+		mapDirectory(directoryData);
+		
+		menuIdx = md5(directoryData);
+		
+		svg = new SVG(Assets.getText("img/menu-button.svg"));
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
-	function start(e:Event):Void
+	function mapDirectory(dir:Dynamic):Void
 	{
-		trace("start");
-		svg = new SVG(Assets.getText("img/menu-button.svg"));
-		
+		directoryMap.set(md5(dir), dir);
+		for (i in 0...dir.directories.length)
+		{
+			mapDirectory(dir.directories[i]);
+		}
+	}
+
+	function start(e:Event):Void
+	{	
 		var xTtl = 5, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = 11, yPxlHght = stage.stageHeight / yTtl;
 		gridSize = cast Math.min(xPxlWdth, yPxlHght);
@@ -50,61 +60,49 @@ class Menu extends Sprite
 		var bgGrid = Grid.create(yTtl,xTtl, gridSize);
 		bgGrid.alpha = .3;
 		addChild(bgGrid);
-		
-		backBtn = new Sprite();
-		var backBtnBg:Sprite = new Sprite();
-		var backBtnText:TextField = new TextField();
-		
-		svg.render(backBtnBg.graphics);
-		backBtnBg.width = 3 * gridSize;
-		backBtnBg.height = 1 * gridSize;
-		
-		backBtnText.text = "back";
-		backBtnText.width = backBtnBg.width;
-		backBtnText.height = backBtnBg.height;
-		backBtnText.selectable = false;
-		backBtnText.getTextFormat().align = TextFormatAlign.CENTER;
-		
-		backBtn.addChild(backBtnBg);
-		backBtn.addChild(backBtnText);
+
+		backBtn = createBtn("back");
 		addChild(backBtn);
-		
-		backBtn.addEventListener(MouseEvent.CLICK, function (event) {
+
+		backBtn.addEventListener(MouseEvent.CLICK, function (event)
+		{
 			trace("click,back");
-			menuMemento.restore();
+			menuIdx = menuHistory.pop();
+			
 			destroyMenu();
 			buildMenu();
 		});
-		
+
 		buildMenu();
 	}
+	
+	function createBtn(text:String):Sprite {
+		var btn = new Sprite();
+		var bg = new Sprite();
+		var txt = new TextField();
+		
+		svg.render(bg.graphics);
+		bg.width = 3 * gridSize;
+		bg.height = 1 * gridSize;
+		
+		txt.text = text;
+		txt.selectable = false;
+		txt.autoSize = TextFieldAutoSize.CENTER;
+		
+		btn.addChild(bg);
+		btn.addChild(txt);
+		return btn;
+	}
 
-	function buildMenu():Void {
-		trace("building",directoryData);
-		for (i in 0...directoryData.directories.length)
+	function buildMenu():Void
+	{
+		trace("building", menuIdx);
+		
+		for (i in 0...directoryMap[menuIdx].directories.length)
 		{
-			var directoryBtn = new Sprite();
-			var btnBg = new Sprite();
-			var text = new TextField();
-
-			directoryBtn.addChild(btnBg);
-			directoryBtn.addChild(text);
+			var directoryBtn = createBtn(directoryMap[menuIdx].directories[i].name);
+			directoryBtn.name = md5(directoryMap[menuIdx].directories[i]);
 			addChild(directoryBtn);
-
-			svg.render(btnBg.graphics);
-			btnBg.width = 3 * gridSize;
-			btnBg.height = 1 * gridSize;
-
-			var key = md5(directoryData.directories[i]);
-			directoryMap.set(key, directoryData.directories[i]);
-			directoryBtn.name = key;
-
-			text.text = directoryData.directories[i].name;
-			text.width = directoryBtn.width;
-			text.height = directoryBtn.height;
-			text.selectable = false;
-
-			text.getTextFormat().align = TextFormatAlign.CENTER;
 
 			directoryBtn.x = 1 * gridSize;
 			directoryBtn.y = i * gridSize;
@@ -112,27 +110,24 @@ class Menu extends Sprite
 			directoryBtn.addEventListener(MouseEvent.CLICK, directoryClick);
 			menuBtns.push(directoryBtn);
 		}
-		
+
 		backBtn.x = 1 * gridSize;
-		backBtn.y = directoryData.directories.length * gridSize;
+		backBtn.y = directoryMap[menuIdx].directories.length * gridSize;
 	}
-	
+
 	function directoryClick(e:MouseEvent):Void
 	{
 		var key:String = cast (e.currentTarget, Sprite).name;
-		trace("click",key,directoryMap[key]);
-		menuMemento.save();
-		
-		for (field in Reflect.fields(directoryMap[key])) {
-			Reflect.setField(directoryData, field, Reflect.field(directoryMap[key], field));
-		}
-		
+		trace("click", key);
+		menuHistory.push(menuIdx);
+		menuIdx = key;
+	
 		destroyMenu();
 		buildMenu();
 	}
-	
-	function destroyMenu() {
-		trace("destroyMenu");
+
+	function destroyMenu()
+	{
 		var btn = menuBtns.pop();
 		while (btn != null)
 		{
@@ -140,10 +135,11 @@ class Menu extends Sprite
 			removeChild(btn);
 			btn = menuBtns.pop();
 		}
-		
+
 	}
-	
-	inline function md5(obj:Dynamic):String {
+
+	inline function md5(obj:Dynamic):String
+	{
 		return Md5.encode(Serializer.run(obj));
 	}
 
