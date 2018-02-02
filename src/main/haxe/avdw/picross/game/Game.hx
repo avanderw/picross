@@ -1,8 +1,6 @@
 package avdw.picross.game;
 
 import avdw.create.grid.Grid;
-import avdw.pattern.Memento;
-import haxe.Json;
 import openfl.Assets;
 import openfl.events.Event;
 import openfl.display.Sprite;
@@ -13,23 +11,22 @@ import openfl.display.Sprite;
  */
 class Game extends Sprite
 {
+	var levelData:Dynamic;
 
-	public function new()
+	public function new(levelData:Dynamic)
 	{
 		super();
-
+		this.levelData = levelData;
+		
+		trace(levelData);
+		var bmd = Assets.getBitmapData(levelData.filename);
+		trace(bmd.getPixel32(0, 0));
+		
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
 	function start(e:Event):Void
 	{
-
-		var jsonObj = Json.parse(Assets.getText("json/level.json"));
-		trace(jsonObj);
-		var memento:Memento = new Memento(jsonObj);
-		trace("saving");
-		memento.save();
-
 		var pctrWdth = 11, pctrHght = 23, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
 		var xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = stage.stageHeight / yTtl;

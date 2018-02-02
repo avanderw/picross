@@ -5,13 +5,15 @@ import openfl.display.Sprite;
  * ...
  * @author Andrew van der Westhuizen
  */
-class Main extends Sprite 
+class Main extends Sprite
 {
+	var menu:Menu;
 
-	public function new() 
+	public function new()
 	{
 		super();
-		addChild(new Menu());
+		addChild(menu = new Menu());
+		
 		// Assets:
 		// openfl.Assets.getBitmapData("img/assetname.jpg");
 	}

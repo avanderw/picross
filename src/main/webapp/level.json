@@ -1,0 +1,51 @@
+{
+  "name": "levels",
+  "directories": [
+    {
+      "name": "group-01",
+      "directories": [],
+      "levels": [
+        {
+          "width": 5,
+          "height": 5,
+          "filename": "levels/group-01/test-5x5.png"
+        }
+      ]
+    },
+    {
+      "name": "group-02",
+      "directories": [
+        {
+          "name": "group-03",
+          "directories": [],
+          "levels": [
+            {
+              "width": 5,
+              "height": 5,
+              "filename": "levels/group-02/group-03/test-5x5.png"
+            }
+          ]
+        }
+      ],
+      "levels": [
+        {
+          "width": 11,
+          "height": 11,
+          "filename": "levels/group-02/test-11x11.png"
+        }
+      ]
+    }
+  ],
+  "levels": [
+    {
+      "width": 11,
+      "height": 11,
+      "filename": "levels/test-11x11.png"
+    },
+    {
+      "width": 5,
+      "height": 5,
+      "filename": "levels/test-5x5.png"
+    }
+  ]
+}
