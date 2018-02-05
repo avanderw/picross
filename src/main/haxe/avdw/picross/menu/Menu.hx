@@ -1,18 +1,15 @@
 package avdw.picross.menu;
 
 import avdw.create.grid.Grid;
+import avdw.openfl.Util;
 import avdw.picross.game.Game;
 import format.SVG;
 import haxe.Json;
-import haxe.Serializer;
-import haxe.crypto.Md5;
 import haxe.ds.StringMap;
 import openfl.Assets;
 import openfl.events.Event;
 import openfl.display.Sprite;
 import openfl.events.MouseEvent;
-import openfl.text.TextField;
-import openfl.text.TextFieldAutoSize;
 
 /**
  * ...
@@ -38,7 +35,7 @@ class Menu extends Sprite
 		var directoryData = Json.parse(Assets.getText("json/level.json"));
 		mapDirectory(directoryData);
 		
-		menuIdx = md5(directoryData);
+		menuIdx = Util.md5(directoryData);
 		
 		svg = new SVG(Assets.getText("img/menu-button.svg"));
 		addEventListener(Event.ADDED_TO_STAGE, start);
@@ -46,14 +43,14 @@ class Menu extends Sprite
 
 	function mapDirectory(dir:Dynamic):Void
 	{
-		directoryMap.set(md5(dir), dir);
+		directoryMap.set(Util.md5(dir), dir);
 		for (i in 0...dir.directories.length)
 		{
 			mapDirectory(dir.directories[i]);
 		}
 		
 		for (i in 0...dir.levels.length) {
-			levelMap.set(md5(dir.levels[i]), dir.levels[i]);
+			levelMap.set(Util.md5(dir.levels[i]), dir.levels[i]);
 		}
 	}
 
@@ -67,7 +64,7 @@ class Menu extends Sprite
 		bgGrid.alpha = .3;
 		addChild(bgGrid);
 
-		backBtn = createBtn("back");
+		backBtn = Util.createBtn("back",  3 * gridSize, 1 * gridSize, svg);
 		addChild(backBtn);
 
 		backBtn.addEventListener(MouseEvent.CLICK, function (event)
@@ -80,24 +77,7 @@ class Menu extends Sprite
 		});
 
 		buildMenu();
-	}
-	
-	function createBtn(text:String):Sprite {
-		var btn = new Sprite();
-		var bg = new Sprite();
-		var txt = new TextField();
-		
-		svg.render(bg.graphics);
-		bg.width = 3 * gridSize;
-		bg.height = 1 * gridSize;
-		
-		txt.text = text;
-		txt.selectable = false;
-		txt.autoSize = TextFieldAutoSize.CENTER;
-		
-		btn.addChild(bg);
-		btn.addChild(txt);
-		return btn;
+		removeEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
 	function buildMenu():Void
@@ -106,8 +86,8 @@ class Menu extends Sprite
 		
 		for (i in 0...directoryMap[menuIdx].directories.length)
 		{
-			var directoryBtn = createBtn(directoryMap[menuIdx].directories[i].name);
-			directoryBtn.name = md5(directoryMap[menuIdx].directories[i]);
+			var directoryBtn = Util.createBtn(directoryMap[menuIdx].directories[i].name,  3 * gridSize, 1 * gridSize, svg);
+			directoryBtn.name = Util.md5(directoryMap[menuIdx].directories[i]);
 			addChild(directoryBtn);
 
 			directoryBtn.x = 1 * gridSize;
@@ -118,8 +98,8 @@ class Menu extends Sprite
 		}
 		
 		for (i in 0...directoryMap[menuIdx].levels.length) {
-			var levelBtn = createBtn(directoryMap[menuIdx].levels[i].filename);
-			levelBtn.name = md5(directoryMap[menuIdx].levels[i]);
+			var levelBtn = Util.createBtn(directoryMap[menuIdx].levels[i].filename,  3 * gridSize, 1 * gridSize, svg);
+			levelBtn.name = Util.md5(directoryMap[menuIdx].levels[i]);
 			addChild(levelBtn);
 			
 			levelBtn.x = 1 * gridSize;
@@ -138,8 +118,9 @@ class Menu extends Sprite
 		var key:String = cast (e.currentTarget, Sprite).name;
 		trace("click", key);
 		
+		var game = new Game(levelMap[key]);
+		parent.addChild(game);
 		parent.removeChild(this);
-		addChild(new Game(levelMap[key]));
 	}
 
 	function directoryClick(e:MouseEvent):Void
@@ -163,11 +144,6 @@ class Menu extends Sprite
 			btn = menuBtns.pop();
 		}
 
-	}
-
-	inline function md5(obj:Dynamic):String
-	{
-		return Md5.encode(Serializer.run(obj));
 	}
 
 }

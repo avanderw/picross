@@ -7,7 +7,7 @@ import openfl.display.Sprite;
  */
 class Main extends Sprite
 {
-	var menu:Menu;
+	static public var menu:Menu;
 
 	public function new()
 	{
