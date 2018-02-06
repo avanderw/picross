@@ -17,15 +17,21 @@ class Game extends Sprite
 	var levelData:Dynamic;
 	var svg:SVG;
 	var colorSelector:ColorSelector;
+	var drawing:Bool = false;
 
 	public function new(levelData:Dynamic)
 	{
 		super();
 		this.levelData = levelData;
 		trace(levelData);
-		
-		
+
 		svg = new SVG(Assets.getText("img/menu-button.svg")); // move to app_global area;
+		addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
+			drawing = true;
+		});
+		addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
+			drawing = false;
+		});
 		addEventListener(Event.ADDED_TO_STAGE, start);
 	}
 
@@ -49,10 +55,8 @@ class Game extends Sprite
 		fgGrid.y += (clrCnt + errCnt) * gridSize;
 		addChild(fgGrid);
 
-		
 		create(gridSize);
-		
-		
+
 		var backBtn = Util.createBtn("back", 3 * gridSize, 1 * gridSize, svg);
 		addChild(backBtn);
 
@@ -63,12 +67,15 @@ class Game extends Sprite
 			parent.removeChild(this);
 		});
 	}
-	
-	function create(gridSize:Int):Void {
+
+	function create(gridSize:Int):Void
+	{
 		var container = new Sprite();
 		var bmd = Assets.getBitmapData(levelData.filename);
-		for (y in 0...bmd.height) {
-			for (x in 0...bmd.width) {
+		for (y in 0...bmd.height)
+		{
+			for (x in 0...bmd.width)
+			{
 				colorSelector.putColor(bmd.getPixel(x, y));
 				var sprite = new Sprite();
 				sprite.graphics.beginFill(bmd.getPixel(x, y), 0);
@@ -76,14 +83,26 @@ class Game extends Sprite
 				sprite.graphics.endFill();
 				sprite.x = x * gridSize;
 				sprite.y = y * gridSize;
+
+				sprite.addEventListener(MouseEvent.MOUSE_OVER, function(e:MouseEvent)
+				{
+					if (drawing)
+					{
+						sprite.graphics.clear();
+						sprite.graphics.beginFill(colorSelector.selected, 1);
+						sprite.graphics.drawRect(0, 0, gridSize, gridSize);
+						sprite.graphics.endFill();
+					}
+				});
+
 				container.addChild(sprite);
 			}
 		}
-		
+
 		container.x = 5 * gridSize;
 		container.y = 5 * gridSize;
 		addChild(container);
-		
+
 		colorSelector.finalise();
 		addChild(colorSelector);
 	}

@@ -14,7 +14,7 @@ class ColorSelector extends Sprite
 	var colors:Map<Int, Sprite> = new IntMap();
 	var size:Int;
 	var eraser:Int = 0xCCCCCC;
-	var selected:Int;
+	public var selected:Int;
 
 	public function new(size:Int)
 	{
