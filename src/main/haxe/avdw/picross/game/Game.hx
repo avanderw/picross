@@ -16,8 +16,8 @@ class Game extends Sprite
 {
 	var levelData:Dynamic;
 	var svg:SVG;
-	var colorSelector:ColorSelector;
-	var drawing:Bool = false;
+	static public var colorSelector:ColorSelector;
+	static public var brushing:Bool = false;
 
 	public function new(levelData:Dynamic)
 	{
@@ -26,16 +26,38 @@ class Game extends Sprite
 		trace(levelData);
 
 		svg = new SVG(Assets.getText("img/menu-button.svg")); // move to app_global area;
-		addEventListener(MouseEvent.MOUSE_DOWN, function(e:MouseEvent) {
-			drawing = true;
-		});
-		addEventListener(MouseEvent.MOUSE_UP, function(e:MouseEvent) {
-			drawing = false;
-		});
-		addEventListener(Event.ADDED_TO_STAGE, start);
+
+		addEventListener(Event.ADDED_TO_STAGE, setup);
+		addEventListener(Event.ADDED_TO_STAGE, addListeners);
 	}
 
-	function start(e:Event):Void
+	function addListeners(e:Event):Void
+	{
+		removeEventListener(Event.ADDED_TO_STAGE, addListeners);
+		addEventListener(MouseEvent.MOUSE_DOWN, startBrushing);
+		addEventListener(MouseEvent.MOUSE_UP, stopBrushing);
+		addEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
+	}
+
+	function removeListeners(e:Event):Void
+	{
+		removeEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
+		removeEventListener(MouseEvent.MOUSE_UP, stopBrushing);
+		removeEventListener(MouseEvent.MOUSE_DOWN, startBrushing);
+	}
+	
+	function startBrushing(e:MouseEvent):Void
+	{
+		brushing = true;
+	}
+	
+
+	function stopBrushing(e:MouseEvent):Void
+	{
+		brushing = false;
+	}
+
+	function setup(e:Event):Void
 	{
 		var pctrWdth = levelData.width, pctrHght = levelData.height, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
 		var xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = stage.stageWidth / xTtl;
@@ -77,25 +99,11 @@ class Game extends Sprite
 			for (x in 0...bmd.width)
 			{
 				colorSelector.putColor(bmd.getPixel(x, y));
-				var sprite = new Sprite();
-				sprite.graphics.beginFill(bmd.getPixel(x, y), 0);
-				sprite.graphics.drawRect(0, 0, gridSize, gridSize);
-				sprite.graphics.endFill();
-				sprite.x = x * gridSize;
-				sprite.y = y * gridSize;
+				var block = new Block(gridSize);
+				block.x = x * gridSize;
+				block.y = y * gridSize;
 
-				sprite.addEventListener(MouseEvent.MOUSE_OVER, function(e:MouseEvent)
-				{
-					if (drawing)
-					{
-						sprite.graphics.clear();
-						sprite.graphics.beginFill(colorSelector.selected, 1);
-						sprite.graphics.drawRect(0, 0, gridSize, gridSize);
-						sprite.graphics.endFill();
-					}
-				});
-
-				container.addChild(sprite);
+				container.addChild(block);
 			}
 		}
 

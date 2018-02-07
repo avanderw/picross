@@ -13,9 +13,6 @@ class Main extends Sprite
 	{
 		super();
 		addChild(menu = new Menu());
-		
-		// Assets:
-		// openfl.Assets.getBitmapData("img/assetname.jpg");
 	}
 
 }
