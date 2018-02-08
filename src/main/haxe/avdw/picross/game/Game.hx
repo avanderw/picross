@@ -16,7 +16,9 @@ class Game extends Sprite
 {
 	var levelData:Dynamic;
 	var svg:SVG;
+	var blocks:Array<Array<Block>> = new Array();
 	static public var colorSelector:ColorSelector;
+	static public var hintController:HintController;
 	static public var brushing:Bool = false;
 
 	public function new(levelData:Dynamic)
@@ -45,12 +47,11 @@ class Game extends Sprite
 		removeEventListener(MouseEvent.MOUSE_UP, stopBrushing);
 		removeEventListener(MouseEvent.MOUSE_DOWN, startBrushing);
 	}
-	
+
 	function startBrushing(e:MouseEvent):Void
 	{
 		brushing = true;
 	}
-	
 
 	function stopBrushing(e:MouseEvent):Void
 	{
@@ -96,6 +97,7 @@ class Game extends Sprite
 		var bmd = Assets.getBitmapData(levelData.filename);
 		for (y in 0...bmd.height)
 		{
+			var line = new Array<Block>();
 			for (x in 0...bmd.width)
 			{
 				colorSelector.putColor(bmd.getPixel(x, y));
@@ -103,8 +105,10 @@ class Game extends Sprite
 				block.x = x * gridSize;
 				block.y = y * gridSize;
 
+				line.push(block);
 				container.addChild(block);
 			}
+			blocks.push(line);
 		}
 
 		container.x = 5 * gridSize;

@@ -29,6 +29,8 @@ class Util
 		bg.height = height;
 		
 		txt.text = text;
+		txt.width = width;
+		txt.height = height;
 		txt.selectable = false;
 		txt.autoSize = TextFieldAutoSize.CENTER;
 		
