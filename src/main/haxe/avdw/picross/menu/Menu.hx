@@ -1,7 +1,8 @@
 package avdw.picross.menu;
 
 import avdw.create.grid.Grid;
-import avdw.openfl.Util;
+import avdw.haxe.Haxe;
+import avdw.openfl.Openfl;
 import avdw.picross.game.Game;
 import format.SVG;
 import haxe.Json;
@@ -35,7 +36,7 @@ class Menu extends Sprite
 		var directoryData = Json.parse(Assets.getText("json/level.json"));
 		mapDirectory(directoryData);
 		
-		menuIdx = Util.md5(directoryData);
+		menuIdx = Haxe.md5(directoryData);
 		
 		svg = new SVG(Assets.getText("img/menu-button.svg"));
 		addEventListener(Event.ADDED_TO_STAGE, start);
@@ -43,14 +44,14 @@ class Menu extends Sprite
 
 	function mapDirectory(dir:Dynamic):Void
 	{
-		directoryMap.set(Util.md5(dir), dir);
+		directoryMap.set(Haxe.md5(dir), dir);
 		for (i in 0...dir.directories.length)
 		{
 			mapDirectory(dir.directories[i]);
 		}
 		
 		for (i in 0...dir.levels.length) {
-			levelMap.set(Util.md5(dir.levels[i]), dir.levels[i]);
+			levelMap.set(Haxe.md5(dir.levels[i]), dir.levels[i]);
 		}
 	}
 
@@ -64,7 +65,7 @@ class Menu extends Sprite
 		bgGrid.alpha = .3;
 		addChild(bgGrid);
 
-		backBtn = Util.createBtn("back",  3 * gridSize, 1 * gridSize, svg);
+		backBtn = Openfl.createBtn("back",  3 * gridSize, 1 * gridSize, svg);
 		addChild(backBtn);
 
 		backBtn.addEventListener(MouseEvent.CLICK, function (event)
@@ -86,8 +87,8 @@ class Menu extends Sprite
 		
 		for (i in 0...directoryMap[menuIdx].directories.length)
 		{
-			var directoryBtn = Util.createBtn(directoryMap[menuIdx].directories[i].name,  3 * gridSize, 1 * gridSize, svg);
-			directoryBtn.name = Util.md5(directoryMap[menuIdx].directories[i]);
+			var directoryBtn = Openfl.createBtn(directoryMap[menuIdx].directories[i].name,  3 * gridSize, 1 * gridSize, svg);
+			directoryBtn.name = Haxe.md5(directoryMap[menuIdx].directories[i]);
 			addChild(directoryBtn);
 
 			directoryBtn.x = 1 * gridSize;
@@ -98,8 +99,8 @@ class Menu extends Sprite
 		}
 		
 		for (i in 0...directoryMap[menuIdx].levels.length) {
-			var levelBtn = Util.createBtn(directoryMap[menuIdx].levels[i].filename,  3 * gridSize, 1 * gridSize, svg);
-			levelBtn.name = Util.md5(directoryMap[menuIdx].levels[i]);
+			var levelBtn = Openfl.createBtn(directoryMap[menuIdx].levels[i].filename,  3 * gridSize, 1 * gridSize, svg);
+			levelBtn.name = Haxe.md5(directoryMap[menuIdx].levels[i]);
 			addChild(levelBtn);
 			
 			levelBtn.x = 1 * gridSize;

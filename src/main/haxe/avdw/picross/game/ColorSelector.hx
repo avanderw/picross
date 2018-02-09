@@ -10,16 +10,18 @@ import openfl.events.MouseEvent;
  */
 class ColorSelector extends Sprite
 {
-	static public var eraser:Int = 0xCCCCCC;
-	var colors:Map<Int, Sprite> = new IntMap();
+	static public var ERASER:Int = 0xCCCCCC;
 	var size:Int;
+	
+	public var colors:Map<Int, Sprite> = new IntMap();
 	public var selected:Int;
+	public var count:Int = 0;
 
 	public function new(size:Int)
 	{
 		super();
 		this.size = size;
-		this.selected = eraser;
+		this.selected = ERASER;
 	}
 
 	public function putColor(pixel:Int) :Void
@@ -29,14 +31,16 @@ class ColorSelector extends Sprite
 			var sprite = createBtn(pixel);
 			colors.set(pixel, sprite);
 			addChild(sprite);
+			count++;
+			trace("putColor", pixel);
 		}
 	}
 
 	public function finalise()
 	{
 
-		var sprite = createBtn(eraser);
-		colors.set(eraser, sprite);
+		var sprite = createBtn(ERASER);
+		colors.set(ERASER, sprite);
 		addChild(sprite);
 
 		var idx = 0;

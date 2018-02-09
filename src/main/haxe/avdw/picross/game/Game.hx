@@ -1,7 +1,7 @@
 package avdw.picross.game;
 
 import avdw.create.grid.Grid;
-import avdw.openfl.Util;
+import avdw.openfl.Openfl;
 import format.SVG;
 import openfl.Assets;
 import openfl.events.Event;
@@ -16,17 +16,18 @@ class Game extends Sprite
 {
 	var levelData:Dynamic;
 	var svg:SVG;
-	var blocks:Array<Array<Block>> = new Array();
-	static public var colorSelector:ColorSelector;
-	static public var hintController:HintController;
-	static public var brushing:Bool = false;
+	public var blocks:Array<Array<Block>> = new Array();
+	public var colorSelector:ColorSelector;
+	public var hints:Hints;
+	public var gridSize:Int;
+	public var brushing:Bool = false;
 
 	public function new(levelData:Dynamic)
 	{
+		trace("new", levelData);
 		super();
 		this.levelData = levelData;
-		trace(levelData);
-
+	
 		svg = new SVG(Assets.getText("img/menu-button.svg")); // move to app_global area;
 
 		addEventListener(Event.ADDED_TO_STAGE, setup);
@@ -63,7 +64,7 @@ class Game extends Sprite
 		var pctrWdth = levelData.width, pctrHght = levelData.height, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
 		var xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = stage.stageHeight / yTtl;
-		var gridSize:Int = cast Math.min(xPxlWdth, yPxlHght);
+		gridSize = cast Math.min(xPxlWdth, yPxlHght);
 
 		colorSelector = new ColorSelector(gridSize);
 		colorSelector.x = 5 * gridSize;
@@ -78,9 +79,9 @@ class Game extends Sprite
 		fgGrid.y += (clrCnt + errCnt) * gridSize;
 		addChild(fgGrid);
 
-		create(gridSize);
+		create();
 
-		var backBtn = Util.createBtn("back", 3 * gridSize, 1 * gridSize, svg);
+		var backBtn = Openfl.createBtn("back", 3 * gridSize, 1 * gridSize, svg);
 		addChild(backBtn);
 
 		backBtn.addEventListener(MouseEvent.CLICK, function (event)
@@ -91,29 +92,35 @@ class Game extends Sprite
 		});
 	}
 
-	function create(gridSize:Int):Void
+	function create():Void
 	{
-		var container = new Sprite();
+		trace("create");
+		var blocksContainer = new Sprite();
 		var bmd = Assets.getBitmapData(levelData.filename);
 		for (y in 0...bmd.height)
 		{
 			var line = new Array<Block>();
 			for (x in 0...bmd.width)
 			{
-				colorSelector.putColor(bmd.getPixel(x, y));
-				var block = new Block(gridSize);
+				var pixel = bmd.getPixel(x, y);
+				colorSelector.putColor(pixel);
+				var block = new Block(this, pixel, gridSize);
 				block.x = x * gridSize;
 				block.y = y * gridSize;
 
 				line.push(block);
-				container.addChild(block);
+				blocksContainer.addChild(block);
 			}
 			blocks.push(line);
 		}
+		trace("...created blocks");
 
-		container.x = 5 * gridSize;
-		container.y = 5 * gridSize;
-		addChild(container);
+		blocksContainer.x = 5 * gridSize;
+		blocksContainer.y = 5 * gridSize;
+		addChild(blocksContainer);
+
+		trace("creating hints...");
+		addChild(hints = new Hints(this));
 
 		colorSelector.finalise();
 		addChild(colorSelector);

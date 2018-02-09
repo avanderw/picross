@@ -8,10 +8,14 @@ class Block extends Sprite
 	var size:Int;
 	var painted:Bool = false;
 	var color:Int;
+	var game:Game;
+	public var pixel:Int;
 
-	public function new(size:Int)
+	public function new(game:Game, pixel:Int, size:Int)
 	{
 		super();
+		this.pixel = pixel;
+		this.game = game;
 		this.size = size;
 
 		graphics.beginFill(0, 0);
@@ -26,25 +30,16 @@ class Block extends Sprite
 		removeEventListener(Event.ADDED_TO_STAGE, addListeners);
 
 		addEventListener(MouseEvent.MOUSE_OVER, paintWhenBrushing);
-		addEventListener(MouseEvent.MOUSE_OVER, refreshHints);
 		addEventListener(MouseEvent.MOUSE_DOWN, paintOnMouseDown);
-		addEventListener(MouseEvent.MOUSE_DOWN, refreshHints);
 		
 		addEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
-	}
-	
-	function refreshHints(e:MouseEvent):Void 
-	{
-		Game.hintController.refresh();
 	}
 
 	function removeListeners(e:Event):Void
 	{
 		removeEventListener(Event.REMOVED_FROM_STAGE, removeListeners);
 		removeEventListener(MouseEvent.MOUSE_DOWN, paintOnMouseDown);
-		removeEventListener(MouseEvent.MOUSE_DOWN, refreshHints);
 		removeEventListener(MouseEvent.MOUSE_OVER, paintWhenBrushing);
-		removeEventListener(MouseEvent.MOUSE_OVER, refreshHints);
 	}
 
 	function paintOnMouseDown(e:MouseEvent):Void
@@ -54,7 +49,7 @@ class Block extends Sprite
 
 	function paintWhenBrushing(e:MouseEvent):Void
 	{
-		if (Game.brushing)
+		if (game.brushing)
 		{
 			paint();
 		}
@@ -62,15 +57,16 @@ class Block extends Sprite
 
 	function paint():Void
 	{
-		var erasing:Bool = Game.colorSelector.selected == ColorSelector.eraser;
+		var erasing:Bool = game.colorSelector.selected == ColorSelector.ERASER;
 		if (!painted || erasing)
 		{
 			graphics.clear();
-			graphics.beginFill(Game.colorSelector.selected, erasing ? 0 : 1);
+			graphics.beginFill(game.colorSelector.selected, erasing ? 0 : 1);
 			graphics.drawRect(0, 0, size, size);
 			graphics.endFill();
 			painted = !erasing;
-			color = Game.colorSelector.selected;
+			color = game.colorSelector.selected;
+			game.hints.refresh();
 		}
 	}
 }

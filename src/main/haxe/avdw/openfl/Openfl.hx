@@ -1,8 +1,6 @@
 package avdw.openfl;
 
 import format.SVG;
-import haxe.Serializer;
-import haxe.crypto.Md5;
 import openfl.display.Sprite;
 import openfl.text.TextField;
 import openfl.text.TextFieldAutoSize;
@@ -11,7 +9,7 @@ import openfl.text.TextFieldAutoSize;
  * ...
  * @author Andrew van der Westhuizen
  */
-class Util 
+class Openfl 
 {
 
 	public function new() 
@@ -39,8 +37,4 @@ class Util
 		return btn;
 	}
 	
-	static inline public function md5(obj:Dynamic):String
-	{
-		return Md5.encode(Serializer.run(obj));
-	}
 }
