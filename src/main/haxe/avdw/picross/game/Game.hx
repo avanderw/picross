@@ -16,9 +16,10 @@ class Game extends Sprite
 {
 	var levelData:Dynamic;
 	var svg:SVG;
-	public var blocks:Array<Array<Block>> = new Array();
-	public var colorSelector:ColorSelector;
-	public var hints:Hints;
+	
+	public var colorManager:ColorManager;
+	public var hintContainer:HintContainer;
+	public var blockContainer:BlockContainer;
 	public var gridSize:Int;
 	public var brushing:Bool = false;
 
@@ -27,7 +28,7 @@ class Game extends Sprite
 		trace("new", levelData);
 		super();
 		this.levelData = levelData;
-	
+
 		svg = new SVG(Assets.getText("img/menu-button.svg")); // move to app_global area;
 
 		addEventListener(Event.ADDED_TO_STAGE, setup);
@@ -66,9 +67,9 @@ class Game extends Sprite
 		var yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = stage.stageHeight / yTtl;
 		gridSize = cast Math.min(xPxlWdth, yPxlHght);
 
-		colorSelector = new ColorSelector(gridSize);
-		colorSelector.x = 5 * gridSize;
-		colorSelector.y = (yTtl - bttnDmntn) * gridSize;
+		colorManager = new ColorManager(gridSize);
+		colorManager.x = 5 * gridSize;
+		colorManager.y = (yTtl - bttnDmntn) * gridSize;
 
 		var bgGrid = Grid.create(yTtl,xTtl, gridSize);
 		bgGrid.alpha = .3;
@@ -94,36 +95,17 @@ class Game extends Sprite
 
 	function create():Void
 	{
-		trace("create");
-		var blocksContainer = new Sprite();
-		var bmd = Assets.getBitmapData(levelData.filename);
-		for (y in 0...bmd.height)
-		{
-			var line = new Array<Block>();
-			for (x in 0...bmd.width)
-			{
-				var pixel = bmd.getPixel(x, y);
-				colorSelector.putColor(pixel);
-				var block = new Block(this, pixel, gridSize);
-				block.x = x * gridSize;
-				block.y = y * gridSize;
+		trace("create...");
+		blockContainer = new BlockContainer(this,Assets.getBitmapData(levelData.filename));
 
-				line.push(block);
-				blocksContainer.addChild(block);
-			}
-			blocks.push(line);
-		}
-		trace("...created blocks");
-
-		blocksContainer.x = 5 * gridSize;
-		blocksContainer.y = 5 * gridSize;
-		addChild(blocksContainer);
+		blockContainer.x = 5 * gridSize;
+		blockContainer.y = 5 * gridSize;
+		addChild(blockContainer);
 
 		trace("creating hints...");
-		addChild(hints = new Hints(this));
+		addChild(hintContainer = new HintContainer(this));
 
-		colorSelector.finalise();
-		addChild(colorSelector);
+		colorManager.finalise();
+		addChild(colorManager);
 	}
-
 }

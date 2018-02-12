@@ -8,7 +8,7 @@ import openfl.events.MouseEvent;
  * ...
  * @author Andrew van der Westhuizen
  */
-class ColorSelector extends Sprite
+class ColorManager extends Sprite
 {
 	static public var ERASER:Int = 0xCCCCCC;
 	var size:Int;

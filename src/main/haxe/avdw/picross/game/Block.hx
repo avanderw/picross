@@ -57,16 +57,16 @@ class Block extends Sprite
 
 	function paint():Void
 	{
-		var erasing:Bool = game.colorSelector.selected == ColorSelector.ERASER;
+		var erasing:Bool = game.colorManager.selected == ColorManager.ERASER;
 		if (!painted || erasing)
 		{
 			graphics.clear();
-			graphics.beginFill(game.colorSelector.selected, erasing ? 0 : 1);
+			graphics.beginFill(game.colorManager.selected, erasing ? 0 : 1);
 			graphics.drawRect(0, 0, size, size);
 			graphics.endFill();
 			painted = !erasing;
-			color = game.colorSelector.selected;
-			game.hints.refresh();
+			color = game.colorManager.selected;
+			game.hintContainer.refresh();
 		}
 	}
 }
