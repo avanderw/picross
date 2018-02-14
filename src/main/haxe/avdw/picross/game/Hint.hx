@@ -1,7 +1,7 @@
 package avdw.picross.game;
 import flash.display.Sprite;
-import haxe.ds.IntMap;
 import openfl.text.TextField;
+import openfl.text.TextFieldAutoSize;
 
 /**
  * ...
@@ -9,41 +9,26 @@ import openfl.text.TextField;
  */
 class Hint extends Sprite
 {
+	var unbroken:Bool;
+	var count:Int;
+	var color:Int;
 	var game:Game;
 
-	public function new(game:Game, line:Array<Block>)
+	public function new(game:Game, color:Int, count:Int, unbroken:Bool)
 	{
 		super();
 		this.game = game;
-		var colorCountMap:IntMap<Int> = countColors(line);
+		this.color = color;
+		this.count = count;
+		this.unbroken = unbroken;
 
-		for (c in colorCountMap.keys())
-		{
-			trace("line", c, colorCountMap.get(c));
-			var count = new TextField();
-			count.text = ""+colorCountMap.get(c);
-			addChild(count);
-		}
-	}
-
-	function countColors(line:Array<Block>)
-	{
-		var colorCountMap = new IntMap();
-		for (idx in 0...line.length)
-		{
-			for (c in game.colorManager.colors.keys())
-			{
-				if (!colorCountMap.exists(c))
-				{
-					colorCountMap.set(c, 0);
-				}
-				if (line[idx].pixel == c)
-				{
-					colorCountMap.set(c, colorCountMap.get(c)+1);
-				}
-			}
-		}
-		return colorCountMap;
+		var textField = new TextField();
+		textField.text = "" + count;
+		textField.textColor = color;
+		textField.width = game.gridSize;
+		textField.autoSize = TextFieldAutoSize.CENTER;
+		textField.y = (game.gridSize - textField.textHeight) / 2;
+		addChild(textField);
 	}
 
 }

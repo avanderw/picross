@@ -1,7 +1,5 @@
 package avdw.picross.game;
-import haxe.ds.IntMap;
 import openfl.display.Sprite;
-import openfl.text.TextField;
 
 /**
  * ...
@@ -23,36 +21,16 @@ class HintContainer extends Sprite
 
 		for (idx in 0...game.blockContainer.rows.length)
 		{
-			
-
-			var rowHint = new Hint(game, game.blockContainer.rows[idx]);
-			rowHints.addChild(rowHint);
-			for (c in colorCountMap.keys())
-			{
-				trace("row", idx, c, colorCountMap.get(c));
-				var hint = new Sprite();
-				var hintText = new TextField();
-				hintText.text = ""+colorCountMap.get(c);
-				hint.addChild(hintText);
-				rowHint.addChild(hint);
-			}
+			var hint = new LineHint(game, game.blockContainer.rows[idx], true);
+			hint.y = idx * game.gridSize;
+			rowHints.addChild(hint);
 		}
 
 		for (idx in 0...game.blockContainer.cols.length)
 		{
-			var colorCountMap:IntMap<Int> = countColors(game.blockContainer.cols[idx]);
-
-			var colHint = new Sprite();
-			colHints.addChild(colHint);
-			for (c in colorCountMap.keys())
-			{
-				trace("col", idx, c, colorCountMap.get(c));
-				var hint = new Sprite();
-				var hintText = new TextField();
-				hintText.text = ""+colorCountMap.get(c);
-				hint.addChild(hintText);
-				colHint.addChild(hint);
-			}
+			var hint = new LineHint(game, game.blockContainer.cols[idx], false);
+			hint.x = idx * game.gridSize;
+			colHints.addChild(hint);
 		}
 
 		rowHints.y = 5 * game.gridSize;
@@ -61,8 +39,6 @@ class HintContainer extends Sprite
 		addChild(rowHints);
 		addChild(colHints);
 	}
-
-	
 
 	public function refresh()
 	{

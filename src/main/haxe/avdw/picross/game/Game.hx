@@ -69,7 +69,7 @@ class Game extends Sprite
 
 		colorManager = new ColorManager(gridSize);
 		colorManager.x = 5 * gridSize;
-		colorManager.y = (yTtl - bttnDmntn) * gridSize;
+		colorManager.y = (yTtl - bttnDmntn + 1) * gridSize;
 
 		var bgGrid = Grid.create(yTtl,xTtl, gridSize);
 		bgGrid.alpha = .3;
