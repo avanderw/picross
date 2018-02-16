@@ -9,18 +9,26 @@ import openfl.text.TextFieldAutoSize;
  */
 class Hint extends Sprite
 {
-	var unbroken:Bool;
+	var broken:Bool;
 	var count:Int;
 	var color:Int;
 	var game:Game;
 
-	public function new(game:Game, color:Int, count:Int, unbroken:Bool)
+	public function new(game:Game, color:Int, count:Int, broken:Bool)
 	{
 		super();
 		this.game = game;
 		this.color = color;
 		this.count = count;
-		this.unbroken = unbroken;
+		this.broken = broken;
+		
+		if (!broken) {
+			var bg = new Sprite();
+			bg.graphics.beginFill(0xcccccc);
+			bg.graphics.drawRect(0, 0, game.gridSize, game.gridSize);
+			bg.graphics.endFill();
+			addChild(bg);
+		}
 
 		var textField = new TextField();
 		textField.text = "" + count;
@@ -29,6 +37,10 @@ class Hint extends Sprite
 		textField.autoSize = TextFieldAutoSize.CENTER;
 		textField.y = (game.gridSize - textField.textHeight) / 2;
 		addChild(textField);
+		
+		if (count == 0) {
+			alpha = 0;
+		}
 	}
 
 }
