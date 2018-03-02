@@ -5,18 +5,22 @@ import openfl.events.Event;
 
 class Block extends Sprite
 {
+	var xIdx:Int;
+	var yIdx:Int;
 	var size:Int;
 	var painted:Bool = false;
-	var color:Int;
 	var game:Game;
 	public var pixel:Int;
+	public var color:Int;
 
-	public function new(game:Game, pixel:Int, size:Int)
+	public function new(game:Game, pixel:Int, size:Int, xIdx:Int, yIdx:Int)
 	{
 		super();
 		this.pixel = pixel;
 		this.game = game;
 		this.size = size;
+		this.xIdx = xIdx;
+		this.yIdx = yIdx;
 
 		graphics.beginFill(0, 0);
 		graphics.drawRect(0, 0, size, size);
@@ -66,7 +70,7 @@ class Block extends Sprite
 			graphics.endFill();
 			painted = !erasing;
 			color = game.colorManager.selected;
-			game.hintContainer.refresh();
+			game.hintContainer.refresh(xIdx, yIdx);
 		}
 	}
 }

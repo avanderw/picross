@@ -9,9 +9,9 @@ import openfl.text.TextFieldAutoSize;
  */
 class Hint extends Sprite
 {
-	var broken:Bool;
-	var count:Int;
-	var color:Int;
+	public var broken:Bool;
+	public var count:Int;
+	public var color:Int;
 	var game:Game;
 
 	public function new(game:Game, color:Int, count:Int, broken:Bool)

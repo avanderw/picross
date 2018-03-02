@@ -24,7 +24,7 @@ class BlockContainer extends Sprite
 				var pixel = bmd.getPixel(x, y);
 				game.colorManager.putColor(pixel);
 				
-				var block = new Block(game, pixel, game.gridSize);
+				var block = new Block(game, pixel, game.gridSize, x, y);
 				block.x = x * game.gridSize;
 				block.y = y * game.gridSize;
 

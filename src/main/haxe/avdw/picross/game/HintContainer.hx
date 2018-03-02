@@ -40,9 +40,11 @@ class HintContainer extends Sprite
 		addChild(colHints);
 	}
 
-	public function refresh()
+	public function refresh(xIdx:Int, yIdx:Int)
 	{
-
+		trace("refreshing hints", xIdx, yIdx);
+		cast (this.rowHints.getChildAt(yIdx), LineHint).refresh();
+		cast (this.colHints.getChildAt(xIdx), LineHint).refresh();
 	}
 
 }
