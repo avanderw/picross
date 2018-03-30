@@ -1,5 +1,7 @@
 package avdw.picross.game;
+import openfl.Assets;
 import flash.display.Sprite;
+import format.SVG;
 import haxe.ds.IntMap;
 
 /**
@@ -41,18 +43,23 @@ class LineHint extends Sprite
 			idx++;
 		}
 
+		var svg:SVG;
+		svg = new SVG(Assets.getText("img/error.svg")); // move to app_global area;
 		error = new Sprite();
-		error.graphics.beginFill(0xFF0000);
-		error.graphics.drawRect(0, 0, game.gridSize, game.gridSize);
-		error.graphics.endFill();
+		svg.render(error.graphics);
+		var ratio = error.width / error.height;
+		error.height = game.gridSize;
+		error.width = ratio * game.gridSize;
+		var offset = (game.gridSize - error.width) / 2;
 		error.alpha = 0;
 
 		if (isRow)
 		{
-			error.x = idx * game.gridSize;
+			error.x = idx * game.gridSize + offset;
 		}
 		else
 		{
+			error.x = offset;
 			error.y = idx * game.gridSize;
 		}
 
