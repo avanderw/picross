@@ -1,51 +1,49 @@
 /* global avdw */
-if (avdw === undefined) {
+
+if (typeof avdw === 'undefined') {
     avdw = {};
 }
-avdw.Memento = function (state, changeSignal) {
-    this.state = state;
-    changeSignal.add(this.onChange);
-};
 
-avdw.Memento.prototype = {
-    state: undefined,
-    history: [],
-    save: function () {
+avdw.Memento = class Memento {
+    constructor(state) {
+        this.state = state;
+        this.history = [];
+    }
+    serialize() {
+        console.log('serializing state');
         return Object.assign({}, this.state);
-    },
-    restore: function (memento) {
+    }
+
+    deserialize(memento) {
+        console.log('deserializing state');
         Object.assign(this.state, memento);
-    },
-    undo: function () {
+    }
+    save() {
+        console.log('saving state');
+        this.history.push(this.serialize());
+    }
+    restore() {
+        console.log('restoring state');
         let memento = this.history.pop();
-        this.restore(memento);
-    },
-    onChange: function () {
-        let memento = this.save();
-        this.history.push(memento);
+        this.deserialize(memento);
     }
 };
 
+(function () {
+    console.log('\nTESTING: Memento.js');
+    let state = {a: 0};
+    let memento = new avdw.Memento(state);
+    console.log('state', state);
 
-var MyObject = (function () {
+    state.a = 2;
+    console.log('state', state);
+    memento.save("payload");
 
-    // Constructor
-    function MyObject(foo) {
-        this._foo = foo;
-    }
+    state.a = 3;
+    console.log('state', state);
 
-    function privateFun(prefix) {
-        return prefix + this._foo;
-    }
-
-    MyObject.prototype.publicFun = function () {
-        return privateFun.call(this, '>>');
-    };
-
-    return MyObject;
+    memento.restore();
+    console.log('state', state);
+    memento.restore();
+    console.log('state', state);
 })();
-
-
-var myObject = new MyObject('bar');
-myObject.publicFun();      // Returns '>>bar'
-myObject.privateFun('>>'); // ReferenceError: private is not defined
