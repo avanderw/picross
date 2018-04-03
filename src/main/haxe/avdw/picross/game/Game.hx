@@ -1,12 +1,11 @@
 package avdw.picross.game;
 
-import avdw.create.grid.Grid;
-import avdw.openfl.Openfl;
-import format.SVG;
-import openfl.Assets;
-import openfl.events.Event;
-import openfl.display.Sprite;
-import openfl.events.MouseEvent;
+import avdw.create.grid.*;
+import avdw.openfl.*;
+import format.*;
+import openfl.*;
+import openfl.display.*;
+import openfl.events.*;
 
 /**
  * ...
@@ -62,12 +61,15 @@ class Game extends Sprite
 
 	function setup(e:Event):Void
 	{
-		var pctrWdth = levelData.width, pctrHght = levelData.height, clrCnt = 4, bttnDmntn = 3, errCnt = 1;
+		// populate colors here then use them to do teh count
+		var bmd:BitmapData = Assets.getBitmapData(levelData.filename);
+		colorManager = new ColorManager(bmd);
+				
+		var pctrWdth = levelData.width, pctrHght = levelData.height, clrCnt = colorManager.count, bttnDmntn = 3, errCnt = 1;
 		var xTtl = pctrWdth + clrCnt + errCnt, xPxlWdth = stage.stageWidth / xTtl;
 		var yTtl = pctrHght + clrCnt + errCnt + bttnDmntn, yPxlHght = stage.stageHeight / yTtl;
 		gridSize = cast Math.min(xPxlWdth, yPxlHght);
 
-		colorManager = new ColorManager(gridSize);
 		colorManager.x = 5 * gridSize;
 		colorManager.y = (yTtl - bttnDmntn + 1) * gridSize;
 
@@ -80,7 +82,7 @@ class Game extends Sprite
 		fgGrid.y += (clrCnt + errCnt) * gridSize;
 		addChild(fgGrid);
 
-		create();
+		create(bmd);
 
 		var backBtn = Openfl.createBtn("back", 3 * gridSize, 1 * gridSize, svg);
 		addChild(backBtn);
@@ -93,10 +95,10 @@ class Game extends Sprite
 		});
 	}
 
-	function create():Void
+	function create(bmd:BitmapData):Void
 	{
 		trace("create...");
-		blockContainer = new BlockContainer(this,Assets.getBitmapData(levelData.filename));
+		blockContainer = new BlockContainer(this, bmd);
 
 		blockContainer.x = 5 * gridSize;
 		blockContainer.y = 5 * gridSize;
@@ -105,7 +107,7 @@ class Game extends Sprite
 		trace("creating hints...");
 		addChild(hintContainer = new HintContainer(this));
 
-		colorManager.finalise();
+		colorManager.finalise(gridSize);
 		addChild(colorManager);
 	}
 }
